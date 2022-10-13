@@ -16,63 +16,61 @@ def add_rate(rates, from_currency, from_type, to_currency, to_type, method, valu
     })
 
 
-def get_best_convert(rates, from_currency, from_type, to_currency, to_type, allow_uncertainty=0, steps=[], print_result=False):
-    # print(steps)
-    if len(steps) > 10:
-        return [], None
-    best_steps_list = []
-    best_rate_list = []
+def get_best_convert(rates, from_currency, from_type, to_currency, to_type,
+                     all_steps_list=None,
+                     all_rate_list=None,
+                     current_steps=None,
+                     allow_uncertainty=0,
+                     print_result=False):
+    # print(current_steps)
+    if current_steps is None:
+        current_steps = []
+    if all_rate_list is None:
+        all_rate_list = []
+    if all_steps_list is None:
+        all_steps_list = []
+    if len(current_steps) > 10:
+        return None, None
     for rate in rates:
         if rate["from_currency"] == from_currency and rate["from_type"] == from_type:
             stop = False
-            for step in steps:
+            for step in current_steps:
                 if rate["to_currency"] == step["from_currency"] and rate["to_type"] == step["from_type"]:
                     stop = True
                     break
             if stop:
                 continue
-            new_steps = steps.copy()
-            new_steps.append(rate)
+            new_current_steps = current_steps.copy()
+            new_current_steps.append(rate)
             if rate["to_currency"] == to_currency and rate["to_type"] == to_type:
-                new_best_steps = new_steps
-                new_best_rate = 1
-                for step in new_best_steps:
-                    new_best_rate *= step["value_from"]
-                # print_format(new_best_steps, new_best_rate)
+                new_rate = 1
+                for step in new_current_steps:
+                    new_rate *= step["value_from"]
+                all_steps_list.append(new_current_steps)
+                all_rate_list.append(new_rate)
+                # print_format(new_steps, new_rate)
             else:
-                # if from_currency == "amd" and from_currency == "cash":
-                #     print("!!!!!!")
-                #     for step in new_steps:
-                #         print(step)
-                #     print()
-                new_best_steps, new_best_rate = \
-                    get_best_convert(rates, rate["to_currency"], rate["to_type"], to_currency, to_type, steps=new_steps)
+                get_best_convert(rates, rate["to_currency"], rate["to_type"], to_currency, to_type,
+                                 all_steps_list=all_steps_list,
+                                 all_rate_list=all_rate_list,
+                                 current_steps=new_current_steps)
 
-            if new_best_rate is not None:
-                best_steps_list.append(new_best_steps)
-                best_rate_list.append(new_best_rate)
-    best_rate = None
-    best_steps = None
-    for num, rate in enumerate(best_rate_list):
-        # for step in best_steps_list[num]:
-        #     print(step)
-        # print(rate)
-        # print()
-        if rate is not None and (best_rate is None or best_rate > rate):
-            best_rate = rate
-            best_steps = best_steps_list[num]
-
-    if len(steps) == 0:
+    if len(current_steps) == 0:
+        best_rate = None
+        best_steps = None
+        for num, rate in enumerate(all_rate_list):
+            if best_rate is None or best_rate > rate:
+                best_rate = rate
+                best_steps = all_steps_list[num]
         if allow_uncertainty > 0:
             second_best_rate = best_rate
             second_best_steps = best_steps
-            for num, rate in enumerate(best_rate_list):
-                if rate is not None \
-                        and rate < best_rate * (1 + allow_uncertainty) \
-                        and len(best_steps_list[num]) < len(second_best_steps):
+            for num, rate in enumerate(all_rate_list):
+                if rate < best_rate * (1 + allow_uncertainty) \
+                        and len(all_steps_list[num]) < len(second_best_steps):
                     second_best_rate = rate
-                    second_best_steps = best_steps_list[num]
-                    print("!!!!", rate)
+                    second_best_steps = all_steps_list[num]
+                    # print("!!!!", rate)
             best_rate = second_best_rate
             best_steps = second_best_steps
         if print_result:
@@ -82,4 +80,6 @@ def get_best_convert(rates, from_currency, from_type, to_currency, to_type, allo
             print(from_currency + ": " + str(best_rate) + ", " + to_currency + ": " + str(1 / best_rate))
             print()
 
-    return best_steps, best_rate
+        return best_steps, best_rate
+    else:
+        return None, None
