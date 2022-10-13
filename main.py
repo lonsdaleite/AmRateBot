@@ -29,10 +29,9 @@ add_rate(all_rates, "rur", "tinkoff",  "rur", "cash",     "unistream", 1.017,   
 # add_rate(all_rates, "rur", "tinkoff",  "eur", "cash",     "unistream", 65.611,    "from")  # !
 
 print_rates(all_rates)
-print()
 
-get_best_convert(all_rates, "rur", "cash", "amd", "cash", allow_uncertainty=0.003, print_result=True)
-get_best_convert(all_rates, "rur", "tinkoff", "amd", "cash", allow_uncertainty=0.003, print_result=True)
+get_best_convert(all_rates, "rur", "cash",    "amd", "cash",     allow_uncertainty=0.003, print_result=True)
+get_best_convert(all_rates, "rur", "tinkoff", "amd", "cash",     allow_uncertainty=0.003, print_result=True)
 get_best_convert(all_rates, "rur", "tinkoff", "amd", "yunibank", allow_uncertainty=0.005, print_result=True)
-get_best_convert(all_rates, "rur", "tinkoff", "usd", "cash", allow_uncertainty=0.003, print_result=True)
-get_best_convert(all_rates, "rur", "tinkoff", "eur", "cash", allow_uncertainty=0.003, print_result=True)
+get_best_convert(all_rates, "rur", "tinkoff", "usd", "cash",     allow_uncertainty=0.003, print_result=True)
+get_best_convert(all_rates, "rur", "tinkoff", "eur", "cash",     allow_uncertainty=0.003, print_result=True)

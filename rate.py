@@ -52,6 +52,7 @@ def print_rates(rates, lens=None):
         lens = get_lens(rates)
     for rate in rates:
         print_rate(rate, lens)
+    print()
 
 
 def get_all_convert(rates, from_currency, from_type, to_currency, to_type,
@@ -119,6 +120,5 @@ def get_best_convert(rates, from_currency, from_type, to_currency, to_type,
         print_rate(head, lens)
         print("All steps:")
         print_rates(best_steps, lens)
-        print()
 
     return best_price, best_steps
