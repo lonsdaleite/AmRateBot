@@ -1,11 +1,11 @@
-def add_rate(rates, from_currency, from_type, to_currency, to_type, method, value, value_type):
+def create_rate(from_currency, from_type, to_currency, to_type, method, value, value_type):
     if value_type == "from":
         value_from = value
         value_to = 1 / value
     else:
         value_from = 1 / value
         value_to = value
-    rates.append({
+    return {
         "from_currency": from_currency,
         "from_type": from_type,
         "to_currency": to_currency,
@@ -13,14 +13,45 @@ def add_rate(rates, from_currency, from_type, to_currency, to_type, method, valu
         "method": method,
         "value_from": value_from,
         "value_to": value_to
-    })
+    }
 
 
-def print_rate(rate):
-    new_rate = rate.copy()
-    new_rate['value_from'] = round(new_rate['value_from'], 5)
-    new_rate['value_to'] = round(new_rate['value_to'], 5)
-    print(new_rate)
+def add_rate(rates, from_currency, from_type, to_currency, to_type, method, value, value_type):
+    rates.append(create_rate(from_currency, from_type, to_currency, to_type, method, value, value_type))
+
+
+def print_rate(rate, lens):
+    print("{}{}{}{}{}{}{}{}{}{}".format(
+        (rate["from_currency"] + ",").ljust(lens[0] + 2),
+        rate["from_type"].ljust(lens[1] + 1),
+        "-> ",
+        (rate["to_currency"] + ",").ljust(lens[2] + 2),
+        rate["to_type"].ljust(lens[3] + 1),
+        ("(" + rate["method"]).ljust(lens[4] + 2),
+        (rate["from_currency"] + ":").ljust(lens[5] + 2),
+        (str(round(rate['value_from'], 5)) + ",").ljust(lens[6] + 2),
+        (rate["to_currency"] + ":").ljust(lens[7] + 2),
+        str(round(rate['value_to'], 5)) + ")"
+    ))
+
+
+def get_lens(rates):
+    return [max([len(x["from_currency"]) for x in rates]),
+            max([len(x["from_type"]) for x in rates]),
+            max([len(x["to_currency"]) for x in rates]),
+            max([len(x["to_type"]) for x in rates]),
+            max([len(x["method"]) for x in rates]),
+            max([len(x["from_currency"]) for x in rates]),
+            max([len(str(round(x['value_from'], 5))) for x in rates]),
+            max([len(x["to_currency"]) for x in rates]),
+            max([len(str(round(x['value_to'], 5))) for x in rates])]
+
+
+def print_rates(rates, lens=None):
+    if lens is None:
+        lens = get_lens(rates)
+    for rate in rates:
+        print_rate(rate, lens)
 
 
 def get_all_convert(rates, from_currency, from_type, to_currency, to_type,
@@ -83,11 +114,11 @@ def get_best_convert(rates, from_currency, from_type, to_currency, to_type,
         best_price = second_best_price
         best_steps = second_best_steps
     if print_result:
-        print(from_currency + ", " + from_type + " -> " + to_currency + ", " + to_type)
-        for print_step in best_steps:
-            print_rate(print_step)
-        print(from_currency + ": " + str(round(best_price, 5)) + ", " +
-              to_currency + ": " + str(round(1 / best_price, 5)))
+        head = create_rate(from_currency, from_type, to_currency, to_type, "", best_price, "from")
+        lens = get_lens(best_steps)
+        print_rate(head, lens)
+        print("All steps:")
+        print_rates(best_steps, lens)
         print()
 
     return best_price, best_steps
