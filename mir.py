@@ -1,3 +1,5 @@
+import random
+
 from bs4 import BeautifulSoup
 import requests
 import time
@@ -12,7 +14,7 @@ def add_mir(url="https://mironline.ru/support/list/kursy_mir/", all_rates=None):
     while result is None:
         if try_num > 0:
             print("WARN: Can not get MIR rate, retrying")
-            time.sleep(3)
+            time.sleep(random.uniform(5, 10))
         try_num += 1
         if try_num > 5:
             print("ERROR: Can not get MIR rate")

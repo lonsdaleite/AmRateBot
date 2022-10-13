@@ -1,4 +1,4 @@
-from rate import add_rate, get_best_convert
+from rate import add_rate, get_best_convert, print_rate
 from rate_am import add_rate_am
 from sas import add_sas
 from mir import add_mir
@@ -11,7 +11,7 @@ add_tinkoff_broker(all_rates=all_rates)
 add_rate_am(convert_type="cash", all_rates=all_rates)
 add_rate_am(convert_type="non-cash", all_rates=all_rates)
 for rate in all_rates:
-    print(rate)
+    print_rate(rate)
 print()
 
 # always
