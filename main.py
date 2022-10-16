@@ -15,11 +15,11 @@ add_rate_am(convert_type="non-cash", all_rates=all_rates)
 
 # always
 add_rate(all_rates, "rur", "tinkoff",  "rur", "yunibank", "transfer",  1,         "from")
-add_rate(all_rates, "usd", "tinkoff",  "usd", "yunibank", "transfer",  1.005,     "from")
-add_rate(all_rates, "eur", "tinkoff",  "eur", "yunibank", "transfer",  1.005,     "from")
+add_rate(all_rates, "usd", "tinkoff",  "usd", "yunibank", "swift",     1.005,     "from")
+add_rate(all_rates, "eur", "tinkoff",  "eur", "yunibank", "swift",     1.005,     "from")
+add_rate(all_rates, "rur", "yunibank", "rur", "cash",     "bank",      1.02,      "from")
 add_rate(all_rates, "usd", "yunibank", "usd", "cash",     "bank",      1.02,      "from")
 add_rate(all_rates, "eur", "yunibank", "eur", "cash",     "bank",      1.02,      "from")
-add_rate(all_rates, "rur", "yunibank", "rur", "cash",     "bank",      1.02,      "from")
 add_rate(all_rates, "amd", "yunibank", "amd", "cash",     "atm",       1,         "from")
 add_rate(all_rates, "amd", "cash",     "amd", "yunibank", "bank",      1,         "from")
 add_rate(all_rates, "usd", "cash",     "usd", "yunibank", "bank",      1,         "from")
@@ -28,9 +28,13 @@ add_rate(all_rates, "eur", "cash",     "eur", "yunibank", "bank",      1,       
 print_rates(all_rates)
 
 get_best_convert(all_rates, "rur", "cash",    "amd", "cash",     allow_uncertainty=0.003, print_result=True)
-get_best_convert(all_rates, "rur", "cash",    "eur", "cash",     allow_uncertainty=0.003, print_result=True)
 get_best_convert(all_rates, "rur", "cash",    "usd", "cash",     allow_uncertainty=0.003, print_result=True)
+get_best_convert(all_rates, "rur", "cash",    "eur", "cash",     allow_uncertainty=0.003, print_result=True)
+
 get_best_convert(all_rates, "rur", "tinkoff", "amd", "cash",     allow_uncertainty=0.003, print_result=True)
-get_best_convert(all_rates, "rur", "tinkoff", "amd", "yunibank", allow_uncertainty=0.005, print_result=True)
 get_best_convert(all_rates, "rur", "tinkoff", "usd", "cash",     allow_uncertainty=0.003, print_result=True)
 get_best_convert(all_rates, "rur", "tinkoff", "eur", "cash",     allow_uncertainty=0.003, print_result=True)
+
+get_best_convert(all_rates, "rur", "tinkoff", "amd", "yunibank", allow_uncertainty=0.003, print_result=True)
+get_best_convert(all_rates, "rur", "tinkoff", "usd", "yunibank", allow_uncertainty=0.003, print_result=True)
+get_best_convert(all_rates, "rur", "tinkoff", "eur", "yunibank", allow_uncertainty=0.003, print_result=True)
