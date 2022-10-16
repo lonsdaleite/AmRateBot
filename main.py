@@ -3,11 +3,13 @@ from rate_am import add_rate_am
 from sas import add_sas
 from mir import add_mir
 from tinkoff_broker import add_tinkoff_broker
+from unistream import add_unistream
 
 all_rates = []
 add_sas(all_rates=all_rates)
 add_mir(all_rates=all_rates)
 add_tinkoff_broker(all_rates=all_rates)
+add_unistream(all_rates=all_rates)
 add_rate_am(convert_type="cash", all_rates=all_rates)
 add_rate_am(convert_type="non-cash", all_rates=all_rates)
 
@@ -22,15 +24,12 @@ add_rate(all_rates, "amd", "yunibank", "amd", "cash",     "atm",       1,       
 add_rate(all_rates, "amd", "cash",     "amd", "yunibank", "bank",      1,         "from")
 add_rate(all_rates, "usd", "cash",     "usd", "yunibank", "bank",      1,         "from")
 add_rate(all_rates, "eur", "cash",     "eur", "yunibank", "bank",      1,         "from")
-add_rate(all_rates, "rur", "tinkoff",  "rur", "cash",     "unistream", 1.017,     "from")
-
-# add_rate(all_rates, "rur", "tinkoff",  "amd", "cash",     "unistream", 0.1686625, "from")  # !
-# add_rate(all_rates, "rur", "tinkoff",  "usd", "cash",     "unistream", 66.023,    "from")  # !
-# add_rate(all_rates, "rur", "tinkoff",  "eur", "cash",     "unistream", 65.611,    "from")  # !
 
 print_rates(all_rates)
 
 get_best_convert(all_rates, "rur", "cash",    "amd", "cash",     allow_uncertainty=0.003, print_result=True)
+get_best_convert(all_rates, "rur", "cash",    "eur", "cash",     allow_uncertainty=0.003, print_result=True)
+get_best_convert(all_rates, "rur", "cash",    "usd", "cash",     allow_uncertainty=0.003, print_result=True)
 get_best_convert(all_rates, "rur", "tinkoff", "amd", "cash",     allow_uncertainty=0.003, print_result=True)
 get_best_convert(all_rates, "rur", "tinkoff", "amd", "yunibank", allow_uncertainty=0.005, print_result=True)
 get_best_convert(all_rates, "rur", "tinkoff", "usd", "cash",     allow_uncertainty=0.003, print_result=True)
