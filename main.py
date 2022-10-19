@@ -38,3 +38,15 @@ get_best_convert(all_rates, "rur", "tinkoff", "usd", "yunibank", allow_uncertain
 get_best_convert(all_rates, "rur", "cash",    "amd", "cash",     allow_uncertainty=0.003, print_result=True)
 get_best_convert(all_rates, "rur", "tinkoff", "amd", "cash",     allow_uncertainty=0.003, print_result=True)
 get_best_convert(all_rates, "rur", "tinkoff", "amd", "yunibank", allow_uncertainty=0.003, print_result=True)
+
+# get_best_convert(all_rates, "rur", "cash",    "eur", "cash",     allow_uncertainty=0.003, print_result=True, exclude_methods=["swift"])
+# get_best_convert(all_rates, "rur", "tinkoff", "eur", "cash",     allow_uncertainty=0.003, print_result=True, exclude_methods=["swift"])
+# get_best_convert(all_rates, "rur", "tinkoff", "eur", "yunibank", allow_uncertainty=0.003, print_result=True, exclude_methods=["swift"])
+#
+# get_best_convert(all_rates, "rur", "cash",    "usd", "cash",     allow_uncertainty=0.003, print_result=True, exclude_methods=["swift"])
+# get_best_convert(all_rates, "rur", "tinkoff", "usd", "cash",     allow_uncertainty=0.003, print_result=True, exclude_methods=["swift"])
+# get_best_convert(all_rates, "rur", "tinkoff", "usd", "yunibank", allow_uncertainty=0.003, print_result=True, exclude_methods=["swift"])
+#
+# get_best_convert(all_rates, "rur", "cash",    "amd", "cash",     allow_uncertainty=0.003, print_result=True, exclude_methods=["swift"])
+# get_best_convert(all_rates, "rur", "tinkoff", "amd", "cash",     allow_uncertainty=0.003, print_result=True, exclude_methods=["swift"])
+# get_best_convert(all_rates, "rur", "tinkoff", "amd", "yunibank", allow_uncertainty=0.003, print_result=True, exclude_methods=["swift"])

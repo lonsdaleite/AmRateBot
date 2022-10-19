@@ -56,9 +56,12 @@ def print_rates(rates, lens=None):
 
 
 def get_all_convert(rates, from_currency, from_type, to_currency, to_type,
+                    exclude_methods=None,
                     all_steps_list=None,
                     all_price_list=None,
                     current_steps=None):
+    if exclude_methods is None:
+        exclude_methods = []
     if current_steps is None:
         current_steps = []
     if all_price_list is None:
@@ -69,6 +72,8 @@ def get_all_convert(rates, from_currency, from_type, to_currency, to_type,
         return None, None
 
     for rate in rates:
+        if rate["method"] in exclude_methods:
+            continue
         if rate["from_currency"] == from_currency and rate["from_type"] == from_type:
             recursion = False
             for step in current_steps:
@@ -87,6 +92,7 @@ def get_all_convert(rates, from_currency, from_type, to_currency, to_type,
                 all_price_list.append(new_price)
             else:
                 get_all_convert(rates, rate["to_currency"], rate["to_type"], to_currency, to_type,
+                                exclude_methods=exclude_methods,
                                 all_steps_list=all_steps_list,
                                 all_price_list=all_price_list,
                                 current_steps=new_current_steps)
@@ -95,8 +101,10 @@ def get_all_convert(rates, from_currency, from_type, to_currency, to_type,
 
 def get_best_convert(rates, from_currency, from_type, to_currency, to_type,
                      allow_uncertainty=0,
-                     print_result=False):
-    all_price_list, all_steps_list = get_all_convert(rates, from_currency, from_type, to_currency, to_type)
+                     print_result=False,
+                     exclude_methods=None):
+    all_price_list, all_steps_list = get_all_convert(rates, from_currency, from_type, to_currency, to_type,
+                                                     exclude_methods=exclude_methods)
 
     best_price = None
     best_steps = None
