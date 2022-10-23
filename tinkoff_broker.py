@@ -4,7 +4,7 @@ import re
 from rate import add_rate
 
 
-def add_tinkoff_broker(url="https://www.tinkoff.ru/invest/currencies/", all_rates=None, fee=0.00025):
+def add_tinkoff_broker(url="https://www.tinkoff.ru/invest/currencies/", all_rates=None, fee=0.003):
     page = requests.get(url)
     usdrub_rate = None
     eurrub_rate = None

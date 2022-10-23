@@ -75,13 +75,14 @@ def get_all_convert(rates, from_currency, from_type, to_currency, to_type,
         if rate["method"] in exclude_methods:
             continue
         if rate["from_currency"] == from_currency and rate["from_type"] == from_type:
-            recursion = False
-            for step in current_steps:
-                if rate["to_currency"] == step["from_currency"] and rate["to_type"] == step["from_type"]:
-                    recursion = True
-                    break
-            if recursion:
-                continue
+            if rate["to_currency"] != to_currency or rate["to_type"] != to_type:
+                recursion = False
+                for step in current_steps:
+                    if rate["to_currency"] == step["from_currency"] and rate["to_type"] == step["from_type"]:
+                        recursion = True
+                        break
+                if recursion:
+                    continue
             new_current_steps = current_steps.copy()
             new_current_steps.append(rate)
             if rate["to_currency"] == to_currency and rate["to_type"] == to_type:
@@ -122,7 +123,7 @@ def get_best_convert(rates, from_currency, from_type, to_currency, to_type,
                 second_best_steps = all_steps_list[num]
         best_price = second_best_price
         best_steps = second_best_steps
-    if print_result:
+    if print_result and best_price is not None:
         head = create_rate(from_currency, from_type, to_currency, to_type, "", best_price, "from")
         lens = get_lens(best_steps)
         print_rate(head, lens)
@@ -130,3 +131,12 @@ def get_best_convert(rates, from_currency, from_type, to_currency, to_type,
         print_rates(best_steps, lens)
 
     return best_price, best_steps
+
+
+def find_arbitrage(rates):
+    pairs = set([(rate["from_currency"], rate["from_type"]) for rate in rates])
+    for pair in pairs:
+        price, steps = get_best_convert(rates, pair[0], pair[1], pair[0], pair[1], print_result=False)
+        if price is not None and price < 1:
+            print("Arbitrage found!")
+            get_best_convert(rates, pair[0], pair[1], pair[0], pair[1], print_result=True)
