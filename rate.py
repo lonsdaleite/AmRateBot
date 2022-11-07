@@ -20,8 +20,8 @@ def add_rate(rates, from_currency, from_type, to_currency, to_type, method, valu
     rates.append(create_rate(from_currency, from_type, to_currency, to_type, method, value, value_type))
 
 
-def print_rate(rate, lens):
-    print("{}{}{}{}{}{}{}{}{}{}".format(
+def format_rate(rate, lens, print_=False):
+    formatted_rate = "{}{}{}{}{}{}{}{}{}{}".format(
         (rate["from_currency"] + ",").ljust(lens[0] + 2),
         rate["from_type"].ljust(lens[1] + 1),
         "-> ",
@@ -32,7 +32,10 @@ def print_rate(rate, lens):
         (str(round(rate['value_from'], 5)) + ",").ljust(lens[6] + 2),
         (rate["to_currency"] + ":").ljust(lens[7] + 2),
         str(round(rate['value_to'], 5)) + ")"
-    ))
+    )
+    if print_:
+        print(formatted_rate)
+    return formatted_rate
 
 
 def get_lens(rates):
@@ -47,12 +50,15 @@ def get_lens(rates):
             max([len(str(round(x['value_to'], 5))) for x in rates])]
 
 
-def print_rates(rates, lens=None):
+def format_rates(rates, lens=None, print_=False):
+    formatted_rates = ""
     if lens is None:
         lens = get_lens(rates)
     for rate in rates:
-        print_rate(rate, lens)
-    print()
+        formatted_rates += format_rate(rate, lens, print_=False) + '\n'
+    if print_:
+        print(formatted_rates)
+    return formatted_rates
 
 
 def get_all_convert(rates, from_currency, from_type, to_currency, to_type,
@@ -102,8 +108,8 @@ def get_all_convert(rates, from_currency, from_type, to_currency, to_type,
 
 def get_best_convert(rates, from_currency, from_type, to_currency, to_type,
                      allow_uncertainty=0,
-                     print_result=False,
-                     exclude_methods=None):
+                     exclude_methods=None,
+                     print_=False):
     all_price_list, all_steps_list = get_all_convert(rates, from_currency, from_type, to_currency, to_type,
                                                      exclude_methods=exclude_methods)
 
@@ -123,20 +129,28 @@ def get_best_convert(rates, from_currency, from_type, to_currency, to_type,
                 second_best_steps = all_steps_list[num]
         best_price = second_best_price
         best_steps = second_best_steps
-    if print_result and best_price is not None:
+    result = ""
+    if best_price is not None:
         head = create_rate(from_currency, from_type, to_currency, to_type, "", best_price, "from")
         lens = get_lens(best_steps)
-        print_rate(head, lens)
-        print("All steps:")
-        print_rates(best_steps, lens)
+        result += format_rate(head, lens, print_=False) + '\n'
+        result += "All steps:\n"
+        result += format_rates(best_steps, lens, print_=False)
 
-    return best_price, best_steps
+    if print_:
+        print(result)
+
+    return result
 
 
-def find_arbitrage(rates):
-    pairs = set([(rate["from_currency"], rate["from_type"]) for rate in rates])
-    for pair in pairs:
-        price, steps = get_best_convert(rates, pair[0], pair[1], pair[0], pair[1], print_result=False)
-        if price is not None and price < 1:
-            print("Arbitrage found!")
-            get_best_convert(rates, pair[0], pair[1], pair[0], pair[1], print_result=True)
+# def find_arbitrage(rates, print_=False):
+#     pairs = set([(rate["from_currency"], rate["from_type"]) for rate in rates])
+#     result = ""
+#     for pair in pairs:
+#         price, steps = get_best_convert(rates, pair[0], pair[1], pair[0], pair[1], print_=False)
+#         if price is not None and price < 1:
+#             result += "Arbitrage found!\n"
+#             result += get_best_convert(rates, pair[0], pair[1], pair[0], pair[1], print_=True) + "\n"
+#     if print_:
+#         print(result)
+#     return result
