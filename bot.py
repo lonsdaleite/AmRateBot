@@ -18,7 +18,7 @@ async def handle_start(message: types.Message, state: FSMContext):
 
 async def handle_welcome(message: types.Message, state: FSMContext):
     msg = "Привет!\n" \
-          + "Я бот, который подскажет лучшие способы обмена валюты в Армении:\n"
+          + "Я бот, который подскажет лучшие способы обмена валюты в Армении!\n"
     await bot.common.send_message(message.from_user.id, msg, reply_markup=bot_reply_markup.dict_menu(main_command_dict))
 
 
