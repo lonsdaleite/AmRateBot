@@ -1,3 +1,6 @@
 venv
 .idea
 bot/user_config.ini
+__pycache__
+rate_bot.log
+
