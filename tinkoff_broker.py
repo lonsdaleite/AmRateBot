@@ -17,7 +17,7 @@ def get_currency(url):
     return rate
 
 
-def add_tinkoff_broker(url="https://www.tinkoff.ru/invest/currencies/", all_rates=None, fee=0.003):
+def add_tinkoff_broker(url="https://www.tinkoff.ru/invest/currencies/", all_rates=None, fee=0.004):
     usdrub_rate = get_currency(url + "USDRUB")
     eurrub_rate = get_currency(url + "EURRUB")
     # print(usdrub_rate, eurrub_rate)

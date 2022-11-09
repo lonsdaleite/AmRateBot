@@ -30,33 +30,34 @@ async def handle_rate(message: types.Message, state: FSMContext):
 
 async def handle_convert(message: types.Message, state: FSMContext):
     all_rates = add_all_rates()
-    msg = get_best_convert(all_rates, "rur", "cash", "eur", "cash", allow_uncertainty=0.003, print_=False)
+    uncertainty = 0.000
+    msg = get_best_convert(all_rates, "rur", "cash", "eur", "cash", allow_uncertainty=uncertainty, print_=False)
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-    msg = get_best_convert(all_rates, "rur", "tinkoff", "eur", "cash", allow_uncertainty=0.003, print_=False)
+    msg = get_best_convert(all_rates, "rur", "tinkoff", "eur", "cash", allow_uncertainty=uncertainty, print_=False)
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-    msg = get_best_convert(all_rates, "rur", "tinkoff", "eur", "yunibank", allow_uncertainty=0.003, print_=False)
-    await bot.common.send_message(message.from_user.id, msg,
-                                  reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-
-    msg = get_best_convert(all_rates, "rur", "cash", "usd", "cash", allow_uncertainty=0.003, print_=False)
-    await bot.common.send_message(message.from_user.id, msg,
-                                  reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-    msg = get_best_convert(all_rates, "rur", "tinkoff", "usd", "cash", allow_uncertainty=0.003, print_=False)
-    await bot.common.send_message(message.from_user.id, msg,
-                                  reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-    msg = get_best_convert(all_rates, "rur", "tinkoff", "usd", "yunibank", allow_uncertainty=0.003, print_=False)
+    msg = get_best_convert(all_rates, "rur", "tinkoff", "eur", "yunibank", allow_uncertainty=uncertainty, print_=False)
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
 
-    msg = get_best_convert(all_rates, "rur", "cash", "amd", "cash", allow_uncertainty=0.003, print_=False)
+    msg = get_best_convert(all_rates, "rur", "cash", "usd", "cash", allow_uncertainty=uncertainty, print_=False)
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-    msg = get_best_convert(all_rates, "rur", "tinkoff", "amd", "cash", allow_uncertainty=0.003, print_=False)
+    msg = get_best_convert(all_rates, "rur", "tinkoff", "usd", "cash", allow_uncertainty=uncertainty, print_=False)
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-    msg = get_best_convert(all_rates, "rur", "tinkoff", "amd", "yunibank", allow_uncertainty=0.003, print_=False)
+    msg = get_best_convert(all_rates, "rur", "tinkoff", "usd", "yunibank", allow_uncertainty=uncertainty, print_=False)
+    await bot.common.send_message(message.from_user.id, msg,
+                                  reply_markup=bot_reply_markup.dict_menu(main_command_dict))
+
+    msg = get_best_convert(all_rates, "rur", "cash", "amd", "cash", allow_uncertainty=uncertainty, print_=False)
+    await bot.common.send_message(message.from_user.id, msg,
+                                  reply_markup=bot_reply_markup.dict_menu(main_command_dict))
+    msg = get_best_convert(all_rates, "rur", "tinkoff", "amd", "cash", allow_uncertainty=uncertainty, print_=False)
+    await bot.common.send_message(message.from_user.id, msg,
+                                  reply_markup=bot_reply_markup.dict_menu(main_command_dict))
+    msg = get_best_convert(all_rates, "rur", "tinkoff", "amd", "yunibank", allow_uncertainty=uncertainty, print_=False)
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
 
