@@ -81,7 +81,7 @@ def get_all_convert(rates, from_currency, from_type, to_currency, to_type,
         if rate["method"] in exclude_methods:
             continue
         if rate["from_currency"] == from_currency and rate["from_type"] == from_type:
-            if rate["to_currency"] != to_currency or rate["to_type"] != to_type:
+            if rate["to_currency"] != to_currency or (to_type != "" and rate["to_type"] != to_type):
                 recursion = False
                 for step in current_steps:
                     if rate["to_currency"] == step["from_currency"] and rate["to_type"] == step["from_type"]:
@@ -91,7 +91,7 @@ def get_all_convert(rates, from_currency, from_type, to_currency, to_type,
                     continue
             new_current_steps = current_steps.copy()
             new_current_steps.append(rate)
-            if rate["to_currency"] == to_currency and rate["to_type"] == to_type:
+            if rate["to_currency"] == to_currency and (to_type == "" or rate["to_type"] == to_type):
                 new_price = 1
                 for step in new_current_steps:
                     new_price *= step["value_from"]
@@ -131,7 +131,10 @@ def get_best_convert(rates, from_currency, from_type, to_currency, to_type,
         best_steps = second_best_steps
     result = ""
     if best_price is not None:
-        head = create_rate(from_currency, from_type, to_currency, to_type, "", best_price, "from")
+        head_to_type = to_type
+        if head_to_type == "":
+            head_to_type = best_steps[-1]["to_type"]
+        head = create_rate(from_currency, from_type, to_currency, head_to_type, "", best_price, "from")
         lens = get_lens(best_steps)
         result += format_rate(head, lens, print_=False) + '\n'
         result += "All steps:\n"
