@@ -1,9 +1,10 @@
 from rate import add_rate
-from rate_am import add_rate_am
-from sas import add_sas
-from mir import add_mir
-from tinkoff_broker import add_tinkoff_broker
-from unistream import add_unistream
+from rate_sources.id_pay import add_id_pay
+from rate_sources.rate_am import add_rate_am
+from rate_sources.sas import add_sas
+from rate_sources.mir import add_mir
+from rate_sources.tinkoff_broker import add_tinkoff_broker
+from rate_sources.unistream import add_unistream
 
 
 def add_const_rates(all_rates=None):
@@ -36,6 +37,7 @@ def add_all_rates(all_rates=None):
     add_unistream(all_rates=all_rates)
     add_rate_am(convert_type="cash", all_rates=all_rates)
     add_rate_am(convert_type="non-cash", all_rates=all_rates)
+    add_id_pay(all_rates)
 
     add_const_rates(all_rates=all_rates)
 

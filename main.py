@@ -3,7 +3,7 @@ from rate import get_best_convert, format_rates
 
 all_rates = add_all_rates()
 format_rates(all_rates, print_=True)
-uncertainty = 0.000
+uncertainty = 0.003
 
 get_best_convert(all_rates, "rur", "cash",    "eur", "cash",     allow_uncertainty=uncertainty, print_=True)
 get_best_convert(all_rates, "rur", "tinkoff", "eur", "cash",     allow_uncertainty=uncertainty, print_=True)

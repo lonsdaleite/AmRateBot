@@ -16,7 +16,7 @@ def add_rate_am(url="https://rate.am/en/armenian-dram-exchange-rates/banks/", co
             method = name
             if convert_type != "cash":
                 # Just for now
-                if name != "yunibank":
+                if name not in ["yunibank", "aydi-bank"]:
                     continue
                 rate_type = name
                 method = "convert"
