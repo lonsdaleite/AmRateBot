@@ -1,7 +1,7 @@
 from aiogram import executor, types
 from aiogram.dispatcher import FSMContext
 import bot.common
-from bot import bot_reply_markup
+from bot import bot_reply_markup, update_rates
 from add_rates import add_all_rates
 from rate import get_best_convert  # , format_rates
 
@@ -22,14 +22,12 @@ async def handle_welcome(message: types.Message, state: FSMContext):
 
 
 async def handle_rate(message: types.Message, state: FSMContext):
-    all_rates = add_all_rates()
-    for rate in all_rates:
+    for rate in bot.common.all_rates:
         await bot.common.send_message(message.from_user.id, rate,
                                       reply_markup=bot_reply_markup.dict_menu(main_command_dict))
 
 
 async def handle_convert(message: types.Message, state: FSMContext):
-    all_rates = add_all_rates()
     uncertainty = 0.000
 
     converts = [["rur", "cash", "am", "",        "eur", "cash", "am", "",         None],
@@ -44,13 +42,15 @@ async def handle_convert(message: types.Message, state: FSMContext):
                 ["rur", "bank", "ru", "tinkoff", "amd", "cash", "am", "",         ["broker"]]]
 
     for conv in converts:
-        msg = get_best_convert(all_rates, conv[0], conv[1], conv[2], conv[3], conv[4], conv[5], conv[6], conv[7],
+        msg = get_best_convert(bot.common.all_rates,
+                               conv[0], conv[1], conv[2], conv[3], conv[4], conv[5], conv[6], conv[7],
                                allow_uncertainty=uncertainty, print_=False, exclude_methods=conv[8])
         await bot.common.send_message(message.from_user.id, msg,
                                       reply_markup=bot_reply_markup.dict_menu(main_command_dict))
 
 
 def register_handlers_main():
+    add_all_rates(bot.common.all_rates)
     bot.common.dp.register_message_handler(handle_start, commands=['start', 'help'], state='*')
     # bot.common.dp.register_message_handler(handle_rate, text=['/rate', main_command_dict['rate']])
     bot.common.dp.register_message_handler(handle_convert, text=['/convert', main_command_dict['convert']])
@@ -58,4 +58,4 @@ def register_handlers_main():
 
 
 register_handlers_main()
-executor.start_polling(bot.common.dp, skip_updates=False)
+executor.start_polling(bot.common.dp, skip_updates=False, on_startup=update_rates.run)

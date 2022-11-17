@@ -6,6 +6,7 @@ from rate_sources.sas import add_sas
 from rate_sources.mir import add_mir
 from rate_sources.tinkoff_broker import add_tinkoff_broker
 from rate_sources.unistream import add_unistream
+import log
 
 
 def add_const_rates(all_rates=None):
@@ -32,6 +33,7 @@ def add_const_rates(all_rates=None):
 
 
 def add_all_rates(all_rates=None):
+    log.logger.debug("Adding rates...")
     if all_rates is None:
         all_rates = []
 
@@ -45,5 +47,7 @@ def add_all_rates(all_rates=None):
     add_id_pay(all_rates)
 
     add_const_rates(all_rates=all_rates)
+
+    log.logger.debug("Rates added")
 
     return all_rates

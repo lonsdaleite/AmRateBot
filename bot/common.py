@@ -11,6 +11,7 @@ import log
 # Bot initialization
 bot = Bot(token=bot_config.BOT_TG_TOKEN)
 dp = Dispatcher(bot, storage=MemoryStorage())
+all_rates = []
 
 
 async def print_log(user, message, state, command_dict=None):
