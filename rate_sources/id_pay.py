@@ -17,7 +17,8 @@ def add_id_pay(all_rates, fee=0.009):
                 and rate["to_country"] == "am" \
                 and rate["to_bank"] == "aydi-bank" \
                 and rate["method"] == "convert":
-            add_rate(all_rates, "rur", "bank", "ru", "", "amd", "bank", "am", "", "idpay", rate["value_from"] * (1 + fee), "from")
+            add_rate(all_rates, "rur", "bank", "ru", "", "amd", "bank", "am", "", "idpay",
+                     rate["value_from"] * (1 + fee), "from")
             rate_added = True
             break
     if not rate_added:

@@ -1,12 +1,11 @@
-from aiogram import executor, types, Bot, Dispatcher
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram import executor, types
 from aiogram.dispatcher import FSMContext
 import bot.common
 from bot import bot_reply_markup
 from add_rates import add_all_rates
-from rate import get_best_convert, format_rates
+from rate import get_best_convert  # , format_rates
 
-main_command_dict = dict(#rate='Получить курсы',
+main_command_dict = dict(  # rate='Получить курсы',
                          convert='Получить способы конвертации',
                          help='Помощь с командами')
 
@@ -25,39 +24,51 @@ async def handle_welcome(message: types.Message, state: FSMContext):
 async def handle_rate(message: types.Message, state: FSMContext):
     all_rates = add_all_rates()
     for rate in all_rates:
-        await bot.common.send_message(message.from_user.id, rate, reply_markup=bot_reply_markup.dict_menu(main_command_dict))
+        await bot.common.send_message(message.from_user.id, rate,
+                                      reply_markup=bot_reply_markup.dict_menu(main_command_dict))
 
 
 async def handle_convert(message: types.Message, state: FSMContext):
     all_rates = add_all_rates()
     uncertainty = 0.000
-    msg = get_best_convert(all_rates, "rur", "cash", "eur", "cash", allow_uncertainty=uncertainty, print_=False)
+    msg = get_best_convert(all_rates, "rur", "cash", "am", "", "eur", "cash", "am", "", allow_uncertainty=uncertainty,
+                           print_=False)
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-    msg = get_best_convert(all_rates, "rur", "tinkoff", "eur", "cash", allow_uncertainty=uncertainty, print_=False)
+    msg = get_best_convert(all_rates, "rur", "bank", "ru", "tinkoff", "eur", "cash", "am", "",
+                           allow_uncertainty=uncertainty, print_=False)
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-    msg = get_best_convert(all_rates, "rur", "tinkoff", "eur", "yunibank", allow_uncertainty=uncertainty, print_=False)
+    msg = get_best_convert(all_rates, "rur", "bank", "ru", "tinkoff", "eur", "bank", "am", "yunibank",
+                           allow_uncertainty=uncertainty, print_=False)
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-
-    msg = get_best_convert(all_rates, "rur", "cash", "usd", "cash", allow_uncertainty=uncertainty, print_=False)
+    msg = get_best_convert(all_rates, "rur", "cash", "am", "", "usd", "cash", "am", "", allow_uncertainty=uncertainty,
+                           print_=False)
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-    msg = get_best_convert(all_rates, "rur", "tinkoff", "usd", "cash", allow_uncertainty=uncertainty, print_=False)
+    msg = get_best_convert(all_rates, "rur", "bank", "ru", "tinkoff", "usd", "cash", "am", "",
+                           allow_uncertainty=uncertainty, print_=False)
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-    msg = get_best_convert(all_rates, "rur", "tinkoff", "usd", "yunibank", allow_uncertainty=uncertainty, print_=False)
+    msg = get_best_convert(all_rates, "rur", "bank", "ru", "tinkoff", "usd", "bank", "am", "yunibank",
+                           allow_uncertainty=uncertainty, print_=False)
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-
-    msg = get_best_convert(all_rates, "rur", "cash", "amd", "cash", allow_uncertainty=uncertainty, print_=False)
+    msg = get_best_convert(all_rates, "rur", "cash", "am", "", "amd", "cash", "am", "", allow_uncertainty=uncertainty,
+                           print_=False)
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-    msg = get_best_convert(all_rates, "rur", "tinkoff", "amd", "cash", allow_uncertainty=uncertainty, print_=False)
+    msg = get_best_convert(all_rates, "rur", "bank", "ru", "tinkoff", "amd", "cash", "am", "",
+                           allow_uncertainty=uncertainty, print_=False)
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
-    msg = get_best_convert(all_rates, "rur", "tinkoff", "amd", "yunibank", allow_uncertainty=uncertainty, print_=False)
+    msg = get_best_convert(all_rates, "rur", "bank", "ru", "tinkoff", "amd", "bank", "am", "yunibank",
+                           allow_uncertainty=uncertainty, print_=False)
+    await bot.common.send_message(message.from_user.id, msg,
+                                  reply_markup=bot_reply_markup.dict_menu(main_command_dict))
+    msg = get_best_convert(all_rates, "rur", "bank", "ru", "tinkoff", "amd", "cash", "am", "",
+                           allow_uncertainty=uncertainty, print_=False, exclude_methods="broker")
     await bot.common.send_message(message.from_user.id, msg,
                                   reply_markup=bot_reply_markup.dict_menu(main_command_dict))
 

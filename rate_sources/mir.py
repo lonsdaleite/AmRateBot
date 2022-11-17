@@ -1,9 +1,7 @@
 import random
-
-from bs4 import BeautifulSoup
-import requests
-from urllib.request import Request, urlopen
 import time
+from bs4 import BeautifulSoup
+from urllib.request import Request, urlopen
 from rate import add_rate
 import log
 

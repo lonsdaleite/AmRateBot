@@ -1,8 +1,6 @@
 from bs4 import BeautifulSoup
-import requests
 from urllib.request import Request, urlopen
 import re
-
 import log
 from rate import add_rate
 
