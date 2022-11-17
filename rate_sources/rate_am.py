@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import re
 from rate import add_rate
+import log
 
 
 def add_rate_am(url="https://rate.am/en/armenian-dram-exchange-rates/banks/", convert_type="cash", all_rates=None):
@@ -11,14 +12,16 @@ def add_rate_am(url="https://rate.am/en/armenian-dram-exchange-rates/banks/", co
 
         banks = soup.find_all("tr", {'id': re.compile('.*-.*')})
         for bank in banks:
-            name = bank.findNext("img").get("alt").lower()
-            rate_type = convert_type
-            method = name
-            if convert_type != "cash":
+            bank_name = bank.findNext("img").get("alt").lower()
+            if convert_type == "cash":
+                rate_type = "cash"
+                method = bank_name
+                bank_name = ""
+            else:
                 # Just for now
-                if name not in ["yunibank", "aydi-bank"]:
+                if bank_name not in ["yunibank", "aydi-bank"]:
                     continue
-                rate_type = name
+                rate_type = "bank"
                 method = "convert"
             pos = bank.findNext("td", class_="date")
             for tmp_rate in [
@@ -31,7 +34,9 @@ def add_rate_am(url="https://rate.am/en/armenian-dram-exchange-rates/banks/", co
             ]:
                 pos = pos.findNext("td")
                 if pos.text is not None and pos.text != "":
-                    add_rate(all_rates, tmp_rate[0], rate_type, tmp_rate[1], rate_type, method,
-                             float(pos.text), tmp_rate[2])
+                    add_rate(all_rates,
+                             tmp_rate[0], rate_type, "am", bank_name,
+                             tmp_rate[1], rate_type, "am", bank_name,
+                             method, float(pos.text), tmp_rate[2])
     else:
-        print("ERROR: rate.am status code: " + str(page.status_code))
+        log.logger.error("rate.am status code: " + str(page.status_code))

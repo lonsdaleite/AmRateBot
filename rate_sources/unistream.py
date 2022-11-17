@@ -33,4 +33,4 @@ def add_unistream(
         if to_currency == "rub":
             to_currency = "rur"
 
-        add_rate(all_rates, "rur", "tinkoff", to_currency, "cash", "unistream", final_rate_value, "to")
+        add_rate(all_rates, "rur", "bank", "ru", "", to_currency, "cash", "am", "", "unistream", final_rate_value, "to")

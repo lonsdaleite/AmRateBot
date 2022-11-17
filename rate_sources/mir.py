@@ -5,6 +5,7 @@ import requests
 from urllib.request import Request, urlopen
 import time
 from rate import add_rate
+import log
 
 
 def add_mir(url="https://mironline.ru/support/list/kursy_mir/", all_rates=None):
@@ -17,11 +18,11 @@ def add_mir(url="https://mironline.ru/support/list/kursy_mir/", all_rates=None):
     try_num = 0
     while result is None:
         if try_num > 0:
-            print("WARN: Can not get MIR rate, retrying")
+            log.logger.warn("Can not get MIR rate, retrying")
             time.sleep(random.uniform(5, 10))
         try_num += 1
         if try_num > 5:
-            print("ERROR: Can not get MIR rate")
+            log.logger.error("Can not get MIR rate")
             break
         soup = BeautifulSoup(page, "lxml")
         # print(soup)
@@ -34,5 +35,5 @@ def add_mir(url="https://mironline.ru/support/list/kursy_mir/", all_rates=None):
             if currency.text.strip() == "Армянский драм":
                 value = currency.findNext("p")
                 result = float(value.text.strip().replace(",", "."))
-                add_rate(all_rates, "rur", "tinkoff", "amd", "cash", "atm", result, "to")
+                add_rate(all_rates, "rur", "bank", "ru", "", "amd", "cash", "am", "", "atm", result, "to")
                 break

@@ -11,18 +11,18 @@ def add_const_rates(all_rates=None):
     if all_rates is None:
         all_rates = []
 
-    add_rate(all_rates, "rur", "tinkoff", "rur", "yunibank", "transfer", 1, "from")
-    add_rate(all_rates, "usd", "tinkoff", "usd", "yunibank", "swift", 1.005, "from")
-    add_rate(all_rates, "eur", "tinkoff", "eur", "yunibank", "swift", 1.005, "from")
-    add_rate(all_rates, "rur", "yunibank", "rur", "cash", "bank", 1.02, "from")
-    add_rate(all_rates, "usd", "yunibank", "usd", "cash", "bank", 1.02, "from")
-    add_rate(all_rates, "eur", "yunibank", "eur", "cash", "bank", 1.02, "from")
-    add_rate(all_rates, "amd", "yunibank", "amd", "cash", "atm", 1, "from")
-    add_rate(all_rates, "amd", "cash", "amd", "yunibank", "bank", 1, "from")
-    add_rate(all_rates, "usd", "cash", "usd", "yunibank", "bank", 1, "from")
-    add_rate(all_rates, "eur", "cash", "eur", "yunibank", "bank", 1, "from")
-    add_rate(all_rates, "rur", "cash", "rur", "yunibank", "bank", 1.02, "from")
-    add_rate(all_rates, "rur", "yunibank", "rur", "tinkoff", "transfer", 1.002, "from")
+    add_rate(all_rates, "rur", "bank", "ru", "",         "rur", "bank", "am", "",         "transfer", 1,     "from")
+    add_rate(all_rates, "usd", "bank", "ru", "tinkoff",  "usd", "bank", "am", "",         "swift",    1.005, "from")
+    add_rate(all_rates, "eur", "bank", "ru", "tinkoff",  "eur", "bank", "am", "",         "swift",    1.005, "from")
+    add_rate(all_rates, "rur", "bank", "am", "yunibank", "rur", "cash", "am", "",         "bank",     1.02,  "from")
+    add_rate(all_rates, "usd", "bank", "am", "yunibank", "usd", "cash", "am", "",         "bank",     1.02,  "from")
+    add_rate(all_rates, "eur", "bank", "am", "yunibank", "eur", "cash", "am", "",         "bank",     1.02,  "from")
+    add_rate(all_rates, "amd", "bank", "am", "yunibank", "amd", "cash", "am", "",         "atm",      1,     "from")
+    add_rate(all_rates, "amd", "cash", "am", "",         "amd", "bank", "am", "yunibank", "bank",     1,     "from")
+    add_rate(all_rates, "usd", "cash", "am", "",         "usd", "bank", "am", "yunibank", "bank",     1,     "from")
+    add_rate(all_rates, "eur", "cash", "am", "",         "eur", "bank", "am", "yunibank", "bank",     1,     "from")
+    add_rate(all_rates, "rur", "cash", "am", "",         "rur", "bank", "am", "yunibank", "bank",     1.02,  "from")
+    add_rate(all_rates, "rur", "bank", "am", "yunibank", "rur", "bank", "ru", "",         "transfer", 1.002, "from")
 
     return all_rates
 

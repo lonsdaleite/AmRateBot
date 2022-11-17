@@ -1,15 +1,7 @@
 import configparser
 import sys
 import logging
-
-# logging.basicConfig(format='[%(asctime)s] %(levelname)s: %(message)s', level=logging.INFO)
-
-logger = logging.getLogger(__name__)
-log_handler = logging.StreamHandler()
-logger.setLevel(logging.INFO)
-log_format = logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s')
-log_handler.setFormatter(log_format)
-logger.addHandler(log_handler)
+import log
 
 config = configparser.ConfigParser()
 config.read("bot/config.ini")
@@ -21,7 +13,7 @@ if debug_str.lower() in ['true', '1', 't', 'y', 'yes']:
     DEBUG = True
 
 if DEBUG:
-    logger.setLevel(logging.DEBUG)
+    log.logger.setLevel(logging.DEBUG)
 
 DEBUG_TG_ID = int(config.get("debug", "debug_tg_id", fallback="-1"))
 if DEBUG_TG_ID == -1:

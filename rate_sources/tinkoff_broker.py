@@ -2,6 +2,8 @@ from bs4 import BeautifulSoup
 import requests
 from urllib.request import Request, urlopen
 import re
+
+import log
 from rate import add_rate
 
 
@@ -23,7 +25,7 @@ def add_tinkoff_broker(url="https://www.tinkoff.ru/invest/currencies/", all_rate
     # print(usdrub_rate, eurrub_rate)
 
     if usdrub_rate is not None and eurrub_rate is not None:
-        add_rate(all_rates, "rur", "tinkoff", "usd", "tinkoff", "broker", float(usdrub_rate) * (1 + fee), "from")
-        add_rate(all_rates, "rur", "tinkoff", "eur", "tinkoff", "broker", float(eurrub_rate) * (1 + fee), "from")
+        add_rate(all_rates, "rur", "bank", "ru", "tinkoff", "usd", "bank", "ru", "tinkoff", "broker", float(usdrub_rate) * (1 + fee), "from")
+        add_rate(all_rates, "rur", "bank", "ru", "tinkoff", "eur", "bank", "ru", "tinkoff", "broker", float(eurrub_rate) * (1 + fee), "from")
     else:
-        print("ERROR: Can not add Tinkoff broker rates")
+        log.logger.error("Can not add Tinkoff broker rates")
