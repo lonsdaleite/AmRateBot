@@ -129,11 +129,14 @@ def get_all_convert(rates,
                     from_currency, from_type, from_country, from_bank,
                     to_currency, to_type, to_country, to_bank,
                     exclude_methods=None,
+                    exclude_banks=None,
                     all_steps_list=None,
                     all_price_list=None,
                     current_steps=None):
     if exclude_methods is None:
         exclude_methods = []
+    if exclude_banks is None:
+        exclude_banks = []
     if current_steps is None:
         current_steps = []
     if all_price_list is None:
@@ -144,7 +147,9 @@ def get_all_convert(rates,
         return None, None
 
     for rate in rates:
-        if rate["method"] in exclude_methods:
+        if rate["method"] in exclude_methods \
+                or rate["from_bank"] in exclude_banks \
+                or rate["to_bank"] in exclude_banks:
             continue
         if rate["from_currency"] == from_currency \
                 and rate["from_type"] == from_type \
@@ -181,6 +186,7 @@ def get_all_convert(rates,
                                 rate["to_currency"], rate["to_type"], rate["to_country"], rate["to_bank"],
                                 to_currency, to_type, to_country, to_bank,
                                 exclude_methods=exclude_methods,
+                                exclude_banks=exclude_banks,
                                 all_steps_list=all_steps_list,
                                 all_price_list=all_price_list,
                                 current_steps=new_current_steps)
@@ -192,11 +198,12 @@ def get_best_convert(rates,
                      to_currency, to_type, to_country, to_bank,
                      allow_uncertainty=0,
                      exclude_methods=None,
+                     exclude_banks=None,
                      print_=False):
     all_price_list, all_steps_list = get_all_convert(rates,
                                                      from_currency, from_type, from_country, from_bank,
                                                      to_currency, to_type, to_country, to_bank,
-                                                     exclude_methods=exclude_methods)
+                                                     exclude_methods=exclude_methods, exclude_banks=exclude_banks)
 
     best_price = None
     best_steps = None
