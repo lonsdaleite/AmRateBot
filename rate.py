@@ -1,4 +1,6 @@
+import copy
 from datetime import datetime
+import prettytable as pt
 import log
 
 
@@ -70,49 +72,24 @@ def add_rate(rates,
     rates.append(new_rate)
 
 
-def format_rate(rate, lens, print_=False):
-    formatted_rate = "{}{}{}{}{}{}{}{}{}{}{}{}{}{}".format(
-        (rate["from_currency"] + ",").ljust(lens[0] + 2),
-        (rate["from_type"] + ",").ljust(4 + 2),
-        (rate["from_country"] + ",").ljust(2 + 2),
-        rate["from_bank"].ljust(lens[1] + 1),
-        "-> ",
-        (rate["to_currency"] + ",").ljust(lens[2] + 2),
-        (rate["to_type"] + ",").ljust(4 + 2),
-        (rate["to_country"] + ",").ljust(2 + 2),
-        rate["to_bank"].ljust(lens[3] + 1),
-        ("(" + rate["method"]).ljust(lens[4] + 2),
-        (rate["from_currency"] + ":").ljust(lens[5] + 2),
-        (str(round(rate['value_from'], 5)) + ",").ljust(lens[6] + 2),
-        (rate["to_currency"] + ":").ljust(lens[7] + 2),
-        str(round(rate['value_to'], 5)) + ")"
-    )
-    if print_:
-        print(formatted_rate)
-    return formatted_rate
-
-
-def get_lens(rates):
-    return [max([len(x["from_currency"]) for x in rates]),
-            max([len(x["from_bank"]) for x in rates]),
-            max([len(x["to_currency"]) for x in rates]),
-            max([len(x["to_bank"]) for x in rates]),
-            max([len(x["method"]) for x in rates]),
-            max([len(x["from_currency"]) for x in rates]),
-            max([len(str(round(x['value_from'], 5))) for x in rates]),
-            max([len(x["to_currency"]) for x in rates]),
-            max([len(str(round(x['value_to'], 5))) for x in rates])]
-
-
-def format_rates(rates, lens=None, print_=False):
-    formatted_rates = ""
-    if lens is None:
-        lens = get_lens(rates)
+def format_rates(rates, print_=False):
+    table = pt.PrettyTable(['Country', 'Currency', 'Type', 'Bank', '',
+                            'Cоuntry', 'Currеncy', 'Typе', 'Bаnk',
+                            'Method', 'Rate'])
+    table.align['Rate'] = 'l'
     for rate in rates:
-        formatted_rates += format_rate(rate, lens, print_=False) + '\n'
+        if rate["value_from"] >= rate["value_to"]:
+            rate_value = str(f'{rate["value_from"]:.2f}') + " " + rate["from_currency"]
+        else:
+            rate_value = str(f'{rate["value_to"]:.2f}') + " " + rate["to_currency"]
+        table.add_row([rate["from_country"], rate["from_currency"], rate["from_type"], rate["from_bank"],
+                       '->',
+                       rate["to_country"], rate["to_currency"], rate["to_type"], rate["to_bank"],
+                       rate["method"], rate_value])
+
     if print_:
-        print(formatted_rates)
-    return formatted_rates
+        print(table)
+    return table
 
 
 def get_all_convert(rates,
@@ -160,8 +137,16 @@ def get_all_convert(rates,
                         break
                 if recursion:
                     continue
-            new_current_steps = current_steps.copy()
+            new_current_steps = copy.deepcopy(current_steps)
             new_current_steps.append(rate)
+            if len(new_current_steps) == 1:
+                if from_bank != "" and new_current_steps[-1]["from_bank"] == "":
+                    new_current_steps[-1]["from_bank"] = from_bank
+            else:
+                if new_current_steps[-2]["to_bank"] != "" and new_current_steps[-1]["from_bank"] == "":
+                    new_current_steps[-1]["from_bank"] = new_current_steps[-2]["to_bank"]
+                elif new_current_steps[-2]["to_bank"] == "" and new_current_steps[-1]["from_bank"] != "":
+                    new_current_steps[-2]["to_bank"] = new_current_steps[-1]["from_bank"]
             if rate["to_currency"] == to_currency \
                     and rate["to_type"] == to_type \
                     and rate["to_country"] == to_country \
@@ -169,6 +154,8 @@ def get_all_convert(rates,
                 new_price = 1
                 for step in new_current_steps:
                     new_price *= step["value_from"]
+                if to_bank != "" and new_current_steps[-1]["to_bank"] == "":
+                    new_current_steps[-1]["to_bank"] = to_bank
                 all_steps_list.append(new_current_steps)
                 all_price_list.append(new_price)
             else:
@@ -201,11 +188,11 @@ def get_best_convert(rates,
         if best_price is None or best_price > price:
             best_price = price
             best_steps = all_steps_list[num]
-    if allow_uncertainty > 0:
+    if allow_uncertainty >= 0:
         second_best_price = best_price
         second_best_steps = best_steps
         for num, price in enumerate(all_price_list):
-            if price < best_price * (1 + allow_uncertainty) \
+            if price <= best_price * (1 + allow_uncertainty) \
                     and len(all_steps_list[num]) < len(second_best_steps):
                 second_best_price = price
                 second_best_steps = all_steps_list[num]
@@ -215,11 +202,8 @@ def get_best_convert(rates,
     if best_price is not None:
         head = create_rate(from_currency, from_type, from_country, from_bank,
                            to_currency, to_type, to_country, to_bank,
-                           "", best_price, "from")
-        lens = get_lens(best_steps)
-        result += format_rate(head, lens, print_=False) + '\n'
-        result += "All steps:\n"
-        result += format_rates(best_steps, lens, print_=False)
+                           "total", best_price, "from")
+        result = format_rates([head] + best_steps, print_=False)
 
     if print_:
         print(result)

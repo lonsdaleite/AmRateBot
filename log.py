@@ -4,7 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 log_handler = logging.StreamHandler()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 log_format = logging.Formatter('[%(asctime)s] %(levelname)s: %(message)s')
 log_handler.setFormatter(log_format)
 logger.addHandler(log_handler)

@@ -45,7 +45,8 @@ async def handle_convert(message: types.Message, state: FSMContext):
         msg = get_best_convert(bot.common.all_rates,
                                conv[0], conv[1], conv[2], conv[3], conv[4], conv[5], conv[6], conv[7],
                                allow_uncertainty=uncertainty, print_=False, exclude_methods=conv[8])
-        await bot.common.send_message(message.from_user.id, msg,
+        await bot.common.send_message(message.from_user.id, f'```{msg}```',
+                                      parse_mode=types.ParseMode.MARKDOWN_V2,
                                       reply_markup=bot_reply_markup.dict_menu(main_command_dict))
 
 
