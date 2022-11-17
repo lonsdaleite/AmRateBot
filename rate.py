@@ -48,20 +48,13 @@ def add_rate(rates,
              from_currency, from_type, from_country, from_bank,
              to_currency, to_type, to_country, to_bank,
              method, value, value_type):
-    rates.append(
-        create_rate(from_currency, from_type, from_country, from_bank,
-                    to_currency, to_type, to_country, to_bank,
-                    method, value, value_type))
-
-
-def update_rate(rates,
-                from_currency, from_type, from_country, from_bank,
-                to_currency, to_type, to_country, to_bank,
-                method, value, value_type):
     if from_bank is None:
         from_bank = ""
     if to_bank is None:
         to_bank = ""
+    new_rate = create_rate(from_currency, from_type, from_country, from_bank,
+                           to_currency, to_type, to_country, to_bank,
+                           method, value, value_type)
     for num, rate in enumerate(rates):
         if rate["from_currency"] == from_currency \
                 and rate["from_type"] == from_type \
@@ -72,12 +65,9 @@ def update_rate(rates,
                 and rate["to_country"] == to_country \
                 and rate["to_bank"] == to_bank \
                 and rate["method"] == method:
-            rates.pop(num)
-            add_rate(rates,
-                     from_currency, from_type, from_country, from_bank,
-                     to_currency, to_type, to_country, to_bank,
-                     method, value, value_type)
-            break
+            rate[num] = new_rate
+            return
+    rates.append(new_rate)
 
 
 def format_rate(rate, lens, print_=False):
@@ -163,7 +153,7 @@ def get_all_convert(rates,
                 for step in current_steps:
                     if rate["to_currency"] == step["from_currency"] \
                             and rate["to_type"] == step["from_type"] \
-                            and rate["to_country"] == step["from_country"]\
+                            and rate["to_country"] == step["from_country"] \
                             and (rate["to_bank"] == "" or step["from_bank"] == ""
                                  or rate["to_bank"] == step["from_bank"]):
                         recursion = True
