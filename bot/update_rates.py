@@ -9,7 +9,7 @@ async def update_rates():
 
 
 async def scheduler(bot):
-    aioschedule.every(20).minute.do(update_rates)
+    aioschedule.every(20).minutes.do(update_rates)
     while True:
         await aioschedule.run_pending()
         await asyncio.sleep(1)
