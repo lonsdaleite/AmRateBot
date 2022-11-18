@@ -37,4 +37,4 @@ def add_unistream(
             add_rate(all_rates, "rur", "bank", "ru", "", to_currency, "cash", "am", "", "unistream", final_rate_value, "to")
         except KeyError as ke:
             log.logger.error("Can not get Unistream rate for " + currency)
-            print(ke)
+            log.logger.error(ke)

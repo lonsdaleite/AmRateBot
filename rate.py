@@ -185,10 +185,15 @@ def get_best_convert(rates,
                      exclude_methods=None,
                      exclude_banks=None,
                      print_=False):
+    log.logger.debug("get_best_convert starting... "
+                     + from_currency + ", " + from_type + ", " + from_country + ", " + from_bank + ", "
+                     + to_currency + ", " + to_type + ", " + to_country + ", " + to_bank + ", "
+                     + str(allow_uncertainty) + ", " + str(exclude_methods) + ", " + str(exclude_banks))
     all_price_list, all_steps_list = get_all_convert(rates,
                                                      from_currency, from_type, from_country, from_bank,
                                                      to_currency, to_type, to_country, to_bank,
                                                      exclude_methods=exclude_methods, exclude_banks=exclude_banks)
+    log.logger.debug("get_best_convert finished")
 
     best_price = None
     best_steps = None
@@ -212,6 +217,8 @@ def get_best_convert(rates,
                            to_currency, to_type, to_country, to_bank,
                            "total", best_price, "from")
         result = format_rates([head] + best_steps, print_=False)
+
+    log.logger.debug("get_all_convert finished")
 
     if print_:
         print(result)

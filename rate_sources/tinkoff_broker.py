@@ -10,12 +10,20 @@ def get_currency(url):
     req = Request(url, headers=hdr)
     page = urlopen(req)
     soup = BeautifulSoup(page, "lxml")
+    # print(soup)
 
-    tmp_result = soup.find_all("div", {'class': re.compile('.*priceText.*')})[0]
-    tmp_result = tmp_result.findNext("span", {'class': re.compile('.*money.*')})
-    rate = re.sub("[^0-9.]", "", tmp_result.text.replace(",", "."))
-    return rate
+    try:
+        tmp_result = soup.find_all("div", {'class': re.compile('.*priceText.*')})[0]
+        # log.logger.debug(tmp_result)
+        tmp_result = tmp_result.findNext("span", {'class': re.compile('.*money.*')})
+        # log.logger.debug(tmp_result)
+        rate = re.sub("[^0-9.]", "", tmp_result.text.replace(",", "."))
+        # log.logger.debug(rate)
+        return rate
+    except Exception as e:
+        log.logger.error(e)
 
+# get_currency("https://www.tinkoff.ru/invest/currencies/USDRUB")
 
 def add_tinkoff_broker(url="https://www.tinkoff.ru/invest/currencies/", all_rates=None, fee=0.004):
     usdrub_rate = get_currency(url + "USDRUB")
