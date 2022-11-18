@@ -2,6 +2,7 @@ import json
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 from rate import add_rate
+import log
 
 
 def add_unistream(
@@ -19,17 +20,21 @@ def add_unistream(
         soup = BeautifulSoup(page, "lxml")
         # print(soup)
 
-        json_str = soup.find_all("p")[0].text
-        # print(json_str)
-        json_parsed = json.loads(json_str)
-        rate_value = json_parsed["fees"][0]["rate"]
-        fee_value = json_parsed["fees"][0]["acceptedTotalFee"]
-        input_value = json_parsed["fees"][0]["acceptedAmount"]
-        final_rate_value = rate_value / (1 + fee_value / (input_value - fee_value))
-        # print(final_rate_value)
+        try:
+            json_str = soup.find_all("p")[0].text
+            # print(json_str)
+            json_parsed = json.loads(json_str)
+            rate_value = json_parsed["fees"][0]["rate"]
+            fee_value = json_parsed["fees"][0]["acceptedTotalFee"]
+            input_value = json_parsed["fees"][0]["acceptedAmount"]
+            final_rate_value = rate_value / (1 + fee_value / (input_value - fee_value))
+            # print(final_rate_value)
 
-        to_currency = currency.lower()
-        if to_currency == "rub":
-            to_currency = "rur"
+            to_currency = currency.lower()
+            if to_currency == "rub":
+                to_currency = "rur"
 
-        add_rate(all_rates, "rur", "bank", "ru", "", to_currency, "cash", "am", "", "unistream", final_rate_value, "to")
+            add_rate(all_rates, "rur", "bank", "ru", "", to_currency, "cash", "am", "", "unistream", final_rate_value, "to")
+        except KeyError as ke:
+            log.logger.error("Can not get Unistream rate for " + currency)
+            print(ke)
