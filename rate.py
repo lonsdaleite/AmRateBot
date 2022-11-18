@@ -73,8 +73,8 @@ def add_rate(rates,
 
 
 def format_rates(rates, print_=False):
-    table = pt.PrettyTable(['Country', 'Currency', 'Type', 'Bank', '',
-                            'Cоuntry', 'Currеncy', 'Typе', 'Bаnk',
+    table = pt.PrettyTable(['Currency', 'Type', '',
+                            'Currеncy', 'Typе',
                             'Method', 'Rate'])
     table.align['Rate'] = 'l'
     for rate in rates:
@@ -82,9 +82,17 @@ def format_rates(rates, print_=False):
             rate_value = str(f'{rate["value_from"]:.2f}') + " " + rate["from_currency"]
         else:
             rate_value = str(f'{rate["value_to"]:.2f}') + " " + rate["to_currency"]
-        table.add_row([rate["from_country"], rate["from_currency"], rate["from_type"], rate["from_bank"],
+        if rate["from_type"] == "cash":
+            print_from_type = "cash"
+        else:
+            print_from_type = rate["from_bank"]
+        if rate["to_type"] == "cash":
+            print_to_type = "cash"
+        else:
+            print_to_type = rate["from_bank"]
+        table.add_row([rate["from_currency"], print_from_type,
                        '->',
-                       rate["to_country"], rate["to_currency"], rate["to_type"], rate["to_bank"],
+                       rate["to_currency"], print_to_type,
                        rate["method"], rate_value])
 
     if print_:
