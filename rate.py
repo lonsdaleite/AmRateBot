@@ -89,7 +89,7 @@ def format_rates(rates, print_=False):
         if rate["to_type"] == "cash":
             print_to_type = "cash"
         else:
-            print_to_type = rate["from_bank"]
+            print_to_type = rate["to_bank"]
         table.add_row([rate["from_currency"], print_from_type,
                        '->',
                        rate["to_currency"], print_to_type,
