@@ -1,7 +1,7 @@
 import prettytable as pt
 
 
-currencies = {"rur": "RUB", "usd": "USD", "eur": "EUR", "amd": "AMD"}
+currencies = {"": "", "rur": "RUB", "usd": "USD", "eur": "EUR", "amd": "AMD"}
 banks = {
     "": "",
     "acba-bank": "Acba Bank",
@@ -26,6 +26,7 @@ banks = {
     "raiffeisen": "Raiffeisen"
 }
 methods = {
+    "": "",
     "atm": "ATM",
     "bank": "Bank",
     "broker": "Broker",
@@ -45,7 +46,7 @@ def format_rates(rates, print_=False):
     table.align['To'] = 'l'
     table.align['Method'] = 'l'
     table.align['Rate'] = 'l'
-    for rate in rates:
+    for rate_num, rate in enumerate(rates):
         format_from_currency = currencies[rate["from_currency"]]
         format_to_currency = currencies[rate["to_currency"]]
         format_from_bank = banks[rate["from_bank"]]
@@ -66,6 +67,10 @@ def format_rates(rates, print_=False):
             format_to_type = "Cash"
         else:
             format_to_type = format_to_bank
+
+        if format_method == "Total":
+            table.add_row(["", "", "", ""])
+
         table.add_row([format_from_currency + ", " + format_from_type,
                        format_to_currency + ", " + format_to_type,
                        format_method, format_value])

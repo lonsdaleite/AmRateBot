@@ -7,7 +7,7 @@ from format import format_rates
 def create_rate(from_currency, from_type, from_country, from_bank,
                 to_currency, to_type, to_country, to_bank,
                 method, value, value_type):
-    if from_type not in ["cash", "bank"]:
+    if from_type not in ["cash", "bank", ""]:
         log.logger.error("from_type can be only cash or bank")
         return None
     if to_type not in ["cash", "bank"]:
@@ -190,7 +190,6 @@ def get_best_convert(rates,
                      exclude_methods=None,
                      exclude_banks=None,
                      print_=False):
-
     # debug_start_all = timer()
 
     all_price_list, all_steps_list = get_all_convert(rates,
@@ -224,10 +223,10 @@ def get_best_convert(rates,
     # Format output
     result = ""
     if best_price is not None:
-        head = create_rate(from_currency, from_type, from_country, from_bank,
-                           to_currency, to_type, to_country, to_bank,
-                           "total", best_price, "from")
-        result = format_rates([head] + best_steps, print_=False)
+        total = create_rate(from_currency, from_type, from_country, from_bank,
+                            to_currency, to_type, to_country, to_bank,
+                            "total", best_price, "from")
+        result = format_rates(best_steps + [total], print_=False)
 
     if print_:
         print(result)
