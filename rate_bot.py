@@ -28,7 +28,7 @@ async def handle_rate(message: types.Message, state: FSMContext):
 
 
 async def handle_convert(message: types.Message, state: FSMContext):
-    uncertainty = 0.000
+    uncertainty = 0.003
 
     converts = [["rur", "cash", "am", "",        "eur", "cash", "am", "",         None],
                 ["rur", "bank", "ru", "tinkoff", "eur", "cash", "am", "",         None],
