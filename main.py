@@ -1,6 +1,7 @@
 import log
 from add_rates import add_all_rates
-from rate import get_best_convert, format_rates
+from rate import get_best_convert
+from format import format_rates
 
 all_rates = add_all_rates()
 # print(all_rates)

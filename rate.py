@@ -1,8 +1,7 @@
 import copy
 from datetime import datetime
-import prettytable as pt
-from timeit import default_timer as timer
 import log
+from format import format_rates
 
 
 def create_rate(from_currency, from_type, from_country, from_bank,
@@ -71,36 +70,6 @@ def add_rate(rates,
             rate[num] = new_rate
             return
     rates.append(new_rate)
-
-
-def format_rates(rates, print_=False):
-    table = pt.PrettyTable(['From',
-                            'To',
-                            'Method', 'Rate'])
-    table.align['From'] = 'l'
-    table.align['To'] = 'l'
-    table.align['Method'] = 'l'
-    table.align['Rate'] = 'l'
-    for rate in rates:
-        if rate["value_from"] >= rate["value_to"]:
-            rate_value = str(f'{rate["value_from"]:.2f}') + " " + rate["from_currency"]
-        else:
-            rate_value = str(f'{rate["value_to"]:.2f}') + " " + rate["to_currency"]
-        if rate["from_type"] == "cash":
-            print_from_type = "cash"
-        else:
-            print_from_type = rate["from_bank"]
-        if rate["to_type"] == "cash":
-            print_to_type = "cash"
-        else:
-            print_to_type = rate["to_bank"]
-        table.add_row([rate["from_currency"] + ", " + print_from_type,
-                       rate["to_currency"] + ", " + print_to_type,
-                       rate["method"], rate_value])
-
-    if print_:
-        print(table)
-    return table
 
 
 def get_all_convert(rates,
