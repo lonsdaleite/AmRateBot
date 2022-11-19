@@ -1,6 +1,7 @@
 import copy
 from datetime import datetime
 import prettytable as pt
+from timeit import default_timer as timer
 import log
 
 
@@ -73,9 +74,12 @@ def add_rate(rates,
 
 
 def format_rates(rates, print_=False):
-    table = pt.PrettyTable(['Currency', 'Type', '',
-                            'Currеncy', 'Typе',
+    table = pt.PrettyTable(['From',
+                            'To',
                             'Method', 'Rate'])
+    table.align['From'] = 'l'
+    table.align['To'] = 'l'
+    table.align['Method'] = 'l'
     table.align['Rate'] = 'l'
     for rate in rates:
         if rate["value_from"] >= rate["value_to"]:
@@ -90,9 +94,8 @@ def format_rates(rates, print_=False):
             print_to_type = "cash"
         else:
             print_to_type = rate["to_bank"]
-        table.add_row([rate["from_currency"], print_from_type,
-                       '->',
-                       rate["to_currency"], print_to_type,
+        table.add_row([rate["from_currency"] + ", " + print_from_type,
+                       rate["to_currency"] + ", " + print_to_type,
                        rate["method"], rate_value])
 
     if print_:
@@ -118,18 +121,29 @@ def get_all_convert(rates,
         all_price_list = []
     if all_steps_list is None:
         all_steps_list = []
-    if len(current_steps) > 10:
+    if len(current_steps) > 7:
         return None, None
 
-    for rate in rates:
+    # Copy rates for removing already used steps
+    rates_copy = copy.copy(rates)
+    rate_num = 0
+    while rate_num < len(rates_copy):
+        rate = rates_copy[rate_num]
+
+        # Remove excluded rates and continue
         if rate["method"] in exclude_methods \
                 or rate["from_bank"] in exclude_banks \
                 or rate["to_bank"] in exclude_banks:
+            rates_copy.pop(rate_num)
             continue
+
+        # If the next step matches
         if rate["from_currency"] == from_currency \
                 and rate["from_type"] == from_type \
                 and rate["from_country"] == from_country \
                 and (rate["from_bank"] == "" or from_bank == "" or rate["from_bank"] == from_bank):
+
+            # Checking steps recursion
             if rate["to_currency"] != to_currency \
                     or rate["to_type"] != to_type \
                     or rate["to_country"] != to_country \
@@ -144,17 +158,31 @@ def get_all_convert(rates,
                         recursion = True
                         break
                 if recursion:
+                    rate_num += 1
                     continue
-            new_current_steps = copy.deepcopy(current_steps)
+
+            # Copy current_steps for the next iteration and append the next step
+            new_current_steps = copy.copy(current_steps)
             new_current_steps.append(rate)
+            rates_copy.pop(rate_num)
+
+            # Update bank info for rates with bank == ""
             if len(new_current_steps) == 1:
                 if from_bank != "" and new_current_steps[-1]["from_bank"] == "":
-                    new_current_steps[-1]["from_bank"] = from_bank
+                    tmp_step_1 = copy.copy(new_current_steps[-1])
+                    tmp_step_1["from_bank"] = from_bank
+                    new_current_steps[-1] = tmp_step_1
             else:
                 if new_current_steps[-2]["to_bank"] != "" and new_current_steps[-1]["from_bank"] == "":
-                    new_current_steps[-1]["from_bank"] = new_current_steps[-2]["to_bank"]
+                    tmp_step_1 = copy.copy(new_current_steps[-1])
+                    tmp_step_1["from_bank"] = new_current_steps[-2]["to_bank"]
+                    new_current_steps[-1] = tmp_step_1
                 elif new_current_steps[-2]["to_bank"] == "" and new_current_steps[-1]["from_bank"] != "":
-                    new_current_steps[-2]["to_bank"] = new_current_steps[-1]["from_bank"]
+                    tmp_step_2 = copy.copy(new_current_steps[-2])
+                    tmp_step_2["to_bank"] = new_current_steps[-1]["from_bank"]
+                    new_current_steps[-2] = tmp_step_2
+
+            # If it is the final step
             if rate["to_currency"] == to_currency \
                     and rate["to_type"] == to_type \
                     and rate["to_country"] == to_country \
@@ -162,12 +190,17 @@ def get_all_convert(rates,
                 new_price = 1
                 for step in new_current_steps:
                     new_price *= step["value_from"]
+
+                # Update bank info for rates with bank == ""
                 if to_bank != "" and new_current_steps[-1]["to_bank"] == "":
-                    new_current_steps[-1]["to_bank"] = to_bank
+                    tmp_step_1 = copy.copy(new_current_steps[-1])
+                    tmp_step_1["to_bank"] = to_bank
+                    new_current_steps[-1] = tmp_step_1
+
                 all_steps_list.append(new_current_steps)
                 all_price_list.append(new_price)
-            else:
-                get_all_convert(rates,
+            else:  # If it is not the final step
+                get_all_convert(rates_copy,
                                 rate["to_currency"], rate["to_type"], rate["to_country"], rate["to_bank"],
                                 to_currency, to_type, to_country, to_bank,
                                 exclude_methods=exclude_methods,
@@ -175,6 +208,9 @@ def get_all_convert(rates,
                                 all_steps_list=all_steps_list,
                                 all_price_list=all_price_list,
                                 current_steps=new_current_steps)
+        else:  # If the next step doesn't match
+            rate_num += 1
+
     return all_price_list, all_steps_list
 
 
@@ -185,22 +221,26 @@ def get_best_convert(rates,
                      exclude_methods=None,
                      exclude_banks=None,
                      print_=False):
-    log.logger.debug("get_best_convert starting... "
-                     + from_currency + ", " + from_type + ", " + from_country + ", " + from_bank + ", "
-                     + to_currency + ", " + to_type + ", " + to_country + ", " + to_bank + ", "
-                     + str(allow_uncertainty) + ", " + str(exclude_methods) + ", " + str(exclude_banks))
+
+    # debug_start_all = timer()
+
     all_price_list, all_steps_list = get_all_convert(rates,
                                                      from_currency, from_type, from_country, from_bank,
                                                      to_currency, to_type, to_country, to_bank,
                                                      exclude_methods=exclude_methods, exclude_banks=exclude_banks)
-    log.logger.debug("get_best_convert finished")
 
+    # debug_end_all = timer()
+    # log.logger.debug("get_all_convert time: " + str(debug_end_all - debug_start_all))
+
+    # Find the best steps and price
     best_price = None
     best_steps = None
     for num, price in enumerate(all_price_list):
         if best_price is None or best_price > price:
             best_price = price
             best_steps = all_steps_list[num]
+
+    # Find shorter steps with almost the same price
     if allow_uncertainty >= 0:
         second_best_price = best_price
         second_best_steps = best_steps
@@ -211,14 +251,14 @@ def get_best_convert(rates,
                 second_best_steps = all_steps_list[num]
         best_price = second_best_price
         best_steps = second_best_steps
+
+    # Format output
     result = ""
     if best_price is not None:
         head = create_rate(from_currency, from_type, from_country, from_bank,
                            to_currency, to_type, to_country, to_bank,
                            "total", best_price, "from")
         result = format_rates([head] + best_steps, print_=False)
-
-    log.logger.debug("get_all_convert finished")
 
     if print_:
         print(result)
