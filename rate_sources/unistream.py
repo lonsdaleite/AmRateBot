@@ -10,17 +10,17 @@ def add_unistream(
             "&accepted_currency=RUB&profile=unistream",
             all_rates=None):
     for currency in ["RUB", "AMD", "USD", "EUR"]:
-        amount = 1000
-        if currency == "RUB":
-            amount = 100000
-        full_url = url.replace("&currency=", "&currency=" + currency).replace("&amount=", "&amount=" + str(amount))
-        hdr = {'User-Agent': 'Mozilla/5.0'}
-        req = Request(full_url, headers=hdr)
-        page = urlopen(req)
-        soup = BeautifulSoup(page, "lxml")
-        # print(soup)
-
         try:
+            amount = 1000
+            if currency == "RUB":
+                amount = 100000
+            full_url = url.replace("&currency=", "&currency=" + currency).replace("&amount=", "&amount=" + str(amount))
+            hdr = {'User-Agent': 'Mozilla/5.0'}
+            req = Request(full_url, headers=hdr)
+            page = urlopen(req)
+            soup = BeautifulSoup(page, "lxml")
+            # print(soup)
+
             json_str = soup.find_all("p")[0].text
             # print(json_str)
             json_parsed = json.loads(json_str)
@@ -35,6 +35,6 @@ def add_unistream(
                 to_currency = "rur"
 
             add_rate(all_rates, "rur", "bank", "ru", "", to_currency, "cash", "am", "", "unistream", final_rate_value, "to")
-        except KeyError as ke:
+        except Exception as e:
             log.logger.error("Can not get Unistream rate for " + currency)
-            log.logger.error(ke)
+            log.logger.error(e)

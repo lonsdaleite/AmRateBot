@@ -22,6 +22,7 @@ def get_currency(url):
         return rate
     except Exception as e:
         log.logger.error(e)
+        log.logger.error("Can not get Tinkoff broker rates")
 
 
 def add_tinkoff_broker(url="https://www.tinkoff.ru/invest/currencies/", all_rates=None, fee=0.004):
