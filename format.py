@@ -1,8 +1,8 @@
 import prettytable as pt
+from prettytable import ALL
 
-
-currencies = {"": "", "rur": "RUB", "usd": "USD", "eur": "EUR", "amd": "AMD"}
-banks = {
+CURRENCIES = {"": "", "rur": "RUB", "usd": "USD", "eur": "EUR", "amd": "AMD"}
+BANKS = {
     "": "",
     "acba-bank": "Acba Bank",
     "ameriabank": "Ameriabank",
@@ -25,7 +25,7 @@ banks = {
     "tinkoff": "Tinkoff",
     "raiffeisen": "Raiffeisen"
 }
-methods = {
+METHODS = {
     "": "",
     "atm": "ATM",
     "bank": "Bank",
@@ -39,22 +39,27 @@ methods = {
     "unistream": "Unistream"
 }
 
+BOLD = '\033[1m'
+END = '\033[0m'
+
 
 def format_rates(rates, print_=False):
-    table = pt.PrettyTable(['From', 'To', 'Method', 'Rate'])
+    table = pt.PrettyTable(['From', 'To', 'Method', 'Rate'], hrules=ALL)
     table.align['From'] = 'l'
     table.align['To'] = 'l'
     table.align['Method'] = 'l'
     table.align['Rate'] = 'l'
+
+    has_total = False
     for rate_num, rate in enumerate(rates):
-        format_from_currency = currencies[rate["from_currency"]]
-        format_to_currency = currencies[rate["to_currency"]]
-        format_from_bank = banks[rate["from_bank"]]
-        format_to_bank = banks[rate["to_bank"]]
-        if rate["method"] in methods:
-            format_method = methods[rate["method"]]
+        format_from_currency = CURRENCIES[rate["from_currency"]]
+        format_to_currency = CURRENCIES[rate["to_currency"]]
+        format_from_bank = BANKS[rate["from_bank"]]
+        format_to_bank = BANKS[rate["to_bank"]]
+        if rate["method"] in METHODS:
+            format_method = METHODS[rate["method"]]
         else:
-            format_method = banks[rate["method"]]
+            format_method = BANKS[rate["method"]]
         if rate["value_from"] >= rate["value_to"]:
             format_value = str(f'{rate["value_from"]:.2f}') + " " + format_from_currency
         else:
@@ -68,12 +73,20 @@ def format_rates(rates, print_=False):
         else:
             format_to_type = format_to_bank
 
+        begin = ""
+        end = ""
         if format_method == "Total":
             table.add_row(["", "", "", ""])
+            has_total = True
+            begin = BOLD
+            end = END
 
-        table.add_row([format_from_currency + ", " + format_from_type,
-                       format_to_currency + ", " + format_to_type,
+        table.add_row([format_from_currency + "\n" + format_from_type,
+                       format_to_currency + "\n" + format_to_type,
                        format_method, format_value])
+
+    if has_total:
+        table.set_cell_style(font_weight="bold", rows=[len(rates)])
 
     if print_:
         print(table)
