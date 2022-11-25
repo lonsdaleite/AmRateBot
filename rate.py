@@ -67,7 +67,7 @@ def add_rate(rates,
                 and rate["to_country"] == to_country \
                 and rate["to_bank"] == to_bank \
                 and rate["method"] == method:
-            rate[num] = new_rate
+            rates[num] = new_rate
             return
     rates.append(new_rate)
 
