@@ -187,6 +187,7 @@ def get_best_convert(rates,
                      from_currency, from_type, from_country, from_bank,
                      to_currency, to_type, to_country, to_bank,
                      allow_uncertainty=0,
+                     result_format="wide",
                      exclude_methods=None,
                      exclude_banks=None,
                      print_=False):
@@ -226,7 +227,7 @@ def get_best_convert(rates,
         total = create_rate(from_currency, from_type, from_country, from_bank,
                             to_currency, to_type, to_country, to_bank,
                             "total", best_price, "from")
-        result = format_rates(best_steps + [total], print_=False)
+        result = format_rates(best_steps + [total], result_format=result_format, print_=False)
 
     if print_:
         print(result)
