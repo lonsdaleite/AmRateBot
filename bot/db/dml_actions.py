@@ -9,7 +9,8 @@ def update_user_info(user_id, tg_id=None, message_format=None, exclude_banks=Non
         log.logger.error("Can not add a user info without user_id")
         return
 
-    if tg_id is None and message_format is None and exclude_banks is None and exclude_methods is None:
+    if tg_id is None and message_format is None and exclude_banks is None and exclude_methods is None \
+            and uncertainty is None:
         log.logger.error("Can't update user_id: " + str(user_id) + " info. No arguments passed.")
         return
 
