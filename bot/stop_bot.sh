@@ -2,7 +2,7 @@
 
 LOG_FILE=$1
 
-bot_file_name="bot/rate_bot.py"
+bot_file_name="rate_bot.py"
 
 stop_bot() {
     pid=$(ps aux | grep -w "$bot_file_name" | grep -vw grep | awk '{print $2}')
