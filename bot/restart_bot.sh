@@ -2,7 +2,7 @@
 
 LOG_FILE=$1
 
-bot_file_name="rate_bot.py"
+bot_file_name="bot/rate_bot.py"
 
 dir=$(dirname $0)/../
 $dir/bot/stop_bot.sh $LOG_FILE
