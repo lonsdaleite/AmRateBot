@@ -75,7 +75,7 @@ async def handle_action_set_uncertainty(message: types.Message, state: FSMContex
         await state.set_state(user_state.InitialState.waiting_for_settings)
         await bot.common.send_message(user.tg_id, msg, reply_markup=bot_reply_markup.dict_menu(settings_dict, 2))
     elif re.match("^[0-9]+%$", text) or re.match("^[0-9]+\\.[0-9]+%$", text):
-        user.uncertainty = float(text[:-1]) / 100
+        user.update_user_info(uncertainty=float(text[:-1]) / 100)
         msg = "Погрешность " + text + " установлена!"
         await state.set_state(user_state.InitialState.waiting_for_settings)
         await bot.common.send_message(user.tg_id, msg, reply_markup=bot_reply_markup.dict_menu(settings_dict, 2))
