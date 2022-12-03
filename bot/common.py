@@ -22,7 +22,9 @@ async def print_log(user, message, state, command_dict=None):
     elif message.caption is not None:
         text = message.caption
 
-    user_state = str(await state.get_state())
+    user_state = ""
+    if state is not None:
+        user_state = str(await state.get_state())
 
     if user is None:
         log.logger.info("Unknown user found:\nID: " + str(tg_id))

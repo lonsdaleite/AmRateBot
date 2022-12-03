@@ -9,9 +9,9 @@ def add_raiffeisen_broker(url="https://www.tinkoff.ru/invest/currencies/", all_r
     # print(usdrub_rate, eurrub_rate)
 
     if usdrub_rate is not None and eurrub_rate is not None:
-        add_rate(all_rates, "rur", "bank", "ru", "raiffeisen", "usd", "bank", "ru", "raiffeisen", "broker",
+        add_rate(all_rates, "rur", "bank", "ru", "raif", "usd", "bank", "ru", "raif", "broker",
                  float(usdrub_rate) * (1 + fee), "from")
-        add_rate(all_rates, "rur", "bank", "ru", "raiffeisen", "eur", "bank", "ru", "raiffeisen", "broker",
+        add_rate(all_rates, "rur", "bank", "ru", "raif", "eur", "bank", "ru", "raif", "broker",
                  float(eurrub_rate) * (1 + fee), "from")
     else:
         log.logger.error("Can not add Raiffeisen broker rates")

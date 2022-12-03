@@ -1,15 +1,31 @@
 import prettytable as pt
 from prettytable import ALL
+from collections import OrderedDict
 
-CURRENCIES = {
-    "": "",
+ALL_CURRENCIES = OrderedDict({
     "rur": "₽",
     "usd": "$",
     "eur": "€",
     "amd": "֏"
-}
-BANKS = {
-    "": "",
+})
+LIST_CURRENCIES = list(ALL_CURRENCIES.keys())
+
+CONVERT_CASH = OrderedDict({"cash": "Наличные"})
+
+CONVERT_RU_BANKS = OrderedDict({
+    "": "Любой банк РФ",
+    "tinkoff": "Tinkoff",
+    "raif": "Raiffeisen",
+})
+LIST_RU_BANKS = list(CONVERT_RU_BANKS.keys())
+
+CONVERT_AM_BANKS = OrderedDict({
+    "": "Любой банк РА",
+    "yunibank": "Unibank"
+})
+LIST_AM_BANKS = list(CONVERT_AM_BANKS.keys())
+
+ALL_BANKS = OrderedDict({
     "acba-bank": "Acba Bank",
     "ameriabank": "Ameriabank",
     "araratbank": "AraratBank",
@@ -26,12 +42,13 @@ BANKS = {
     "inekobank": "Inecobank",
     "konvers-bank": "Converse Bank",
     "mellat-bank": "Mellat Bank",
-    "vtbhayastan-bank": "VTB",
-    "yunibank": "Unibank",
-    "tinkoff": "Tinkoff",
-    "raiffeisen": "Raiffeisen"
-}
-METHODS = {
+    "vtbhayastan-bank": "VTB"
+})
+ALL_BANKS.update(CONVERT_AM_BANKS)
+ALL_BANKS.update(CONVERT_RU_BANKS)
+ALL_BANKS[""] = "Любой банк"
+
+ALL_METHODS = OrderedDict({
     "": "",
     "atm": "ATM",
     "bank": "Bank",
@@ -43,7 +60,7 @@ METHODS = {
     "total": "Total",
     "transfer": "Transfer",
     "unistream": "Unistream"
-}
+})
 
 
 def format_rates(rates, result_format="wide", print_=False):
@@ -54,19 +71,19 @@ def format_rates(rates, result_format="wide", print_=False):
     table.header = False
     table.align = 'l'
     if result_format == "wide":
-        table.add_row(['#', 'From', 'Method', 'To', 'Rate'])
+        table.add_row(['#', 'From', 'To', 'Method', 'Rate'])
     else:
         table.add_row(['#', 'From\nMethod', 'To\nRate'])
 
     for rate_num, rate in enumerate(rates):
-        format_from_currency = CURRENCIES[rate["from_currency"]]
-        format_to_currency = CURRENCIES[rate["to_currency"]]
-        format_from_bank = BANKS[rate["from_bank"]]
-        format_to_bank = BANKS[rate["to_bank"]]
-        if rate["method"] in METHODS:
-            format_method = METHODS[rate["method"]]
+        format_from_currency = ALL_CURRENCIES[rate["from_currency"]]
+        format_to_currency = ALL_CURRENCIES[rate["to_currency"]]
+        format_from_bank = ALL_BANKS[rate["from_bank"]]
+        format_to_bank = ALL_BANKS[rate["to_bank"]]
+        if rate["method"] in ALL_METHODS:
+            format_method = ALL_METHODS[rate["method"]]
         else:
-            format_method = BANKS[rate["method"]]
+            format_method = ALL_BANKS[rate["method"]]
         if rate["value_from"] >= rate["value_to"]:
             format_value = str(f'{rate["value_from"]:.2f}') + " " + format_from_currency
         else:
