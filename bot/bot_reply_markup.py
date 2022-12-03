@@ -25,6 +25,12 @@ def cancel():
     return markup
 
 
+def back():
+    markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+    markup.add("Назад")
+    return markup
+
+
 def user_accept():
     markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
     markup.add("Давай начнем!")

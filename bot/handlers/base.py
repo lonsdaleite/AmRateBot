@@ -5,7 +5,12 @@ import bot.common
 import bot.user_state
 from bot import bot_reply_markup
 from bot.db import dml_actions
-from bot.commands import main_command_dict
+
+
+main_command_dict = dict(
+    convert='Новая конвертация',
+    settings='Настройки',
+    help='Помощь с командами')
 
 
 async def handle_start(message: types.Message, state: FSMContext):
@@ -80,6 +85,5 @@ async def handle_cancel(message: types.Message, state: FSMContext):
     if user is None:
         return
 
-    response_dict = main_command_dict
     await bot.common.send_message(user.tg_id, "Перехожу в главное меню",
-                                  reply_markup=bot_reply_markup.dict_menu(response_dict))
+                                  reply_markup=bot_reply_markup.dict_menu(main_command_dict))
