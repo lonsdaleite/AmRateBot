@@ -4,8 +4,8 @@ import logging
 import log
 
 config = configparser.ConfigParser()
-config.read("config.ini")
-config.read("user_config.ini")
+config.read("bot/config.ini")
+config.read("bot/user_config.ini")
 
 DEBUG = False
 debug_str = config.get("debug", "debug", fallback="False")
