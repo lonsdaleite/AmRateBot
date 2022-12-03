@@ -24,11 +24,11 @@ SQLITE3_SCRIPT_DIR = config.get("sqlite3", "sql_scripts", fallback=None)
 
 BOT_TG_TOKEN = config.get("bot", "bot_tg_token", fallback=None)
 
-# if SQLITE3_DB is None or SQLITE3_DB == "":
-#     sys.exit("ERROR: [sqlite3]/db_file parameter must be set in config.ini or user_config.ini")
+if SQLITE3_DB is None or SQLITE3_DB == "":
+    sys.exit("ERROR: [sqlite3]/db_file parameter must be set in config.ini or user_config.ini")
 
-# if SQLITE3_SCRIPT_DIR is None or SQLITE3_SCRIPT_DIR == "":
-#     sys.exit("ERROR: [sqlite3]/sql_scripts parameter must be set in config.ini or user_config.ini")
+if SQLITE3_SCRIPT_DIR is None or SQLITE3_SCRIPT_DIR == "":
+    sys.exit("ERROR: [sqlite3]/sql_scripts parameter must be set in config.ini or user_config.ini")
 
 if BOT_TG_TOKEN is None or BOT_TG_TOKEN == "":
     sys.exit("ERROR: [bot]/bot_tg_token parameter must be set in config.ini or user_config.ini")

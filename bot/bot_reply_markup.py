@@ -22,3 +22,9 @@ def cancel():
     markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
     markup.add("Отмена")
     return markup
+
+
+def user_accept():
+    markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+    markup.add("Давай начнем!")
+    return markup
