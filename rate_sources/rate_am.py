@@ -19,9 +19,9 @@ def add_rate_am(url="https://rate.am/en/armenian-dram-exchange-rates/banks/", co
                     method = bank_name
                     bank_name = ""
                 else:
-                    # Just for now
-                    if bank_name not in ["yunibank", "aydi-bank"]:
-                        continue
+                    # # Just for now
+                    # if bank_name not in ["yunibank", "aydi-bank"]:
+                    #     continue
                     rate_type = "bank"
                     method = "convert"
                 pos = bank.findNext("td", class_="date")

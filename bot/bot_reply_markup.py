@@ -72,3 +72,31 @@ def inline_convert(from_currency, from_type, from_country, from_bank,
     ]
     markup = types.InlineKeyboardMarkup(inline_keyboard=buttons)
     return markup
+
+
+def create_banks_callback_suffix(exclude_banks):
+    suffix = ""
+    for num in range(1, len(const.LIST_ALL_BANKS)):
+        if const.LIST_ALL_BANKS[num] in exclude_banks:
+            suffix += "#0"
+        else:
+            suffix += "#1"
+    return suffix
+
+
+def inline_banks(exclude_banks):
+    callback_data_suffix = create_banks_callback_suffix(exclude_banks)
+    buttons = []
+    for num in range(1, len(const.LIST_ALL_BANKS)):
+        bank_key = const.LIST_ALL_BANKS[num]
+        bank = const.ALL_BANKS[bank_key]
+        if bank_key in exclude_banks:
+            bank += " 0"
+        else:
+            bank += " 1"
+        buttons.append([types.InlineKeyboardButton(text=bank,
+                                                   callback_data="bb_" + bank_key + callback_data_suffix)])
+    buttons.append([types.InlineKeyboardButton(text="Обновить информацию",
+                                               callback_data="ub_" + callback_data_suffix)])
+    markup = types.InlineKeyboardMarkup(inline_keyboard=buttons)
+    return markup

@@ -149,31 +149,35 @@ async def callback_update_to_currency(callback: types.CallbackQuery):
 
 
 async def callback_update_from_union_type(callback: types.CallbackQuery):
+    user = bot.common.get_user(tg_id=callback.from_user.id)
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank = \
         parse_callback_data(callback.data)
 
+    list_ru_banks_exclude = [x for x in const.LIST_RU_BANKS if x not in user.exclude_banks]
+    list_am_banks_exclude = [x for x in const.LIST_AM_BANKS if x not in user.exclude_banks]
+
     if from_type == "cash":
         from_type = "bank"
-        from_bank = const.LIST_RU_BANKS[0]
+        from_bank = list_ru_banks_exclude[0]
         from_country = "ru"
     elif from_country == "ru":
-        for num, bank in enumerate(const.LIST_RU_BANKS):
+        for num, bank in enumerate(list_ru_banks_exclude):
             if from_bank == bank:
-                if num == len(const.LIST_RU_BANKS) - 1:
-                    from_bank = const.LIST_AM_BANKS[0]
+                if num == len(list_ru_banks_exclude) - 1:
+                    from_bank = list_am_banks_exclude[0]
                     from_country = "am"
                 else:
-                    from_bank = const.LIST_RU_BANKS[num + 1]
+                    from_bank = list_ru_banks_exclude[num + 1]
                 break
     else:
-        for num, bank in enumerate(const.LIST_AM_BANKS):
+        for num, bank in enumerate(list_am_banks_exclude):
             if from_bank == bank:
-                if num == len(const.LIST_AM_BANKS) - 1:
+                if num == len(list_am_banks_exclude) - 1:
                     from_bank = ""
                     from_type = "cash"
                     from_country = "am"
                 else:
-                    from_bank = const.LIST_AM_BANKS[num + 1]
+                    from_bank = list_am_banks_exclude[num + 1]
                 break
 
     msg = callback.message.text
@@ -185,31 +189,35 @@ async def callback_update_from_union_type(callback: types.CallbackQuery):
 
 
 async def callback_update_to_union_type(callback: types.CallbackQuery):
+    user = bot.common.get_user(tg_id=callback.from_user.id)
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank = \
         parse_callback_data(callback.data)
 
+    list_ru_banks_exclude = [x for x in const.LIST_RU_BANKS if x not in user.exclude_banks]
+    list_am_banks_exclude = [x for x in const.LIST_AM_BANKS if x not in user.exclude_banks]
+
     if to_type == "cash":
         to_type = "bank"
-        to_bank = const.LIST_RU_BANKS[0]
+        to_bank = list_ru_banks_exclude[0]
         to_country = "ru"
     elif to_country == "ru":
-        for num, bank in enumerate(const.LIST_RU_BANKS):
+        for num, bank in enumerate(list_ru_banks_exclude):
             if to_bank == bank:
-                if num == len(const.LIST_RU_BANKS) - 1:
-                    to_bank = const.LIST_AM_BANKS[0]
+                if num == len(list_ru_banks_exclude) - 1:
+                    to_bank = list_am_banks_exclude[0]
                     to_country = "am"
                 else:
-                    to_bank = const.LIST_RU_BANKS[num + 1]
+                    to_bank = list_ru_banks_exclude[num + 1]
                 break
     else:
-        for num, bank in enumerate(const.LIST_AM_BANKS):
+        for num, bank in enumerate(list_am_banks_exclude):
             if to_bank == bank:
-                if num == len(const.LIST_AM_BANKS) - 1:
+                if num == len(list_am_banks_exclude) - 1:
                     to_bank = ""
                     to_type = "cash"
                     to_country = "am"
                 else:
-                    to_bank = const.LIST_AM_BANKS[num + 1]
+                    to_bank = list_am_banks_exclude[num + 1]
                 break
 
     msg = callback.message.text

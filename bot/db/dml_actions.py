@@ -1,4 +1,6 @@
 from datetime import datetime
+
+import const
 import log
 from bot.db import sql_connect
 
@@ -48,14 +50,14 @@ def update_user_info(user_id, tg_id=None, message_format=None, exclude_banks=Non
             UPDATE user
             SET exclude_banks = ?
             WHERE user_id = ? and deleted_flg = '0'
-            """, (exclude_banks, user_id))
+            """, (",".join(exclude_banks), user_id))
 
     if exclude_methods is not None:
         cursor.execute("""
             UPDATE user
             SET exclude_methods = ?
             WHERE user_id = ? and deleted_flg = '0'
-            """, (exclude_methods, user_id))
+            """, (",".join(exclude_methods), user_id))
 
     if uncertainty is not None:
         cursor.execute("""
@@ -116,9 +118,11 @@ def add_user(tg_id=None):
         user_id = cursor.fetchone()[0]
 
         cursor.execute("""
-            INSERT INTO user (user_id, tg_id, message_format, uncertainty, deleted_flg, processed_dttm) 
-            VALUES (?, ?, ?, ?, ?, ?)
-            """, (user_id, tg_id, 'short', 0.003, '0', datetime.now()))
+            INSERT INTO user (
+               user_id, tg_id, message_format, uncertainty, exclude_banks, exclude_methods, deleted_flg, processed_dttm) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (user_id, tg_id, 'short', 0.003,
+                  ",".join(const.DEFAULT_EXCLUDE_BANKS), ",".join(const.DEFAULT_EXCLUDE_METHODS), '0', datetime.now()))
 
         log.logger.info("user_id: " + str(user_id) + " tg_id: " + str(tg_id) + " added")
     elif row['deleted_flg'] == '0':

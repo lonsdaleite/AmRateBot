@@ -9,7 +9,8 @@ from bot.handlers.convert import handle_convert, callback_update_convert, \
     callback_update_from_currency, callback_update_to_currency, callback_update_from_union_type, \
     callback_update_to_union_type, handle_convert_all
 from bot.handlers.settings import handle_settings, handle_set_message_format, handle_action_set_message_format, \
-    settings_dict, handle_set_uncertainty, handle_action_set_uncertainty
+    settings_dict, handle_set_uncertainty, handle_action_set_uncertainty, callback_update_exclude_banks, \
+    callback_update_bank_button, handle_set_banks
 
 
 def register_handlers_main():
@@ -30,20 +31,29 @@ def register_handlers_main():
     bot.common.dp.register_message_handler(handle_action_set_uncertainty,
                                            state=[user_state.InitialState.waiting_for_set_uncertainty])
 
+    bot.common.dp.register_message_handler(handle_set_banks, text=['/banks',
+                                                                   settings_dict['banks']],
+                                           state=[user_state.InitialState.waiting_for_settings])
+
     bot.common.dp.register_message_handler(handle_settings, text=['/settings', main_command_dict['settings']])
     bot.common.dp.register_message_handler(handle_convert_all, text=['/convert_all'])  # Hidden method
     bot.common.dp.register_message_handler(handle_convert, text=['/convert', main_command_dict['convert']])
     bot.common.dp.register_message_handler(handle_welcome)
 
-    bot.common.dp.register_callback_query_handler(callback_update_convert, regexp=re.compile(r"update.*"))
+    bot.common.dp.register_callback_query_handler(callback_update_bank_button, regexp=re.compile(r"^bb_.*"),
+                                                  state=[user_state.InitialState.waiting_for_settings])
+    bot.common.dp.register_callback_query_handler(callback_update_exclude_banks, regexp=re.compile(r"^ub_.*"),
+                                                  state=[user_state.InitialState.waiting_for_settings])
+
+    bot.common.dp.register_callback_query_handler(callback_update_convert, regexp=re.compile(r"^update.*"))
     bot.common.dp.register_callback_query_handler(callback_update_from_currency,
-                                                  regexp=re.compile(r"from_currency.*"))
+                                                  regexp=re.compile(r"^from_currency.*"))
     bot.common.dp.register_callback_query_handler(callback_update_to_currency,
-                                                  regexp=re.compile(r"to_currency.*"))
+                                                  regexp=re.compile(r"^to_currency.*"))
     bot.common.dp.register_callback_query_handler(callback_update_from_union_type,
-                                                  regexp=re.compile(r"from_union_type.*"))
+                                                  regexp=re.compile(r"^from_union_type.*"))
     bot.common.dp.register_callback_query_handler(callback_update_to_union_type,
-                                                  regexp=re.compile(r"to_union_type.*"))
+                                                  regexp=re.compile(r"^to_union_type.*"))
 
 
 sql_init.run_scripts()
