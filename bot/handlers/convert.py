@@ -7,7 +7,8 @@ import const
 import log
 from bot import bot_reply_markup
 from bot.handlers.base import validate, main_command_dict
-from rate import get_best_convert
+from format import format_rates
+from rate import get_best_convert, create_rate
 
 
 async def handle_convert(message: types.Message, state: FSMContext):
@@ -81,6 +82,7 @@ async def callback_update_convert(callback: types.CallbackQuery):
     #                        "#" + to_currency + "#" + to_type + "#" + to_bank + "#" + to_bank
     # log.logger.debug(callback_data_suffix)
 
+    prev_msg = callback.message.text
     msg = get_best_convert(bot.common.all_rates,
                            from_currency, from_type, from_country, from_bank,
                            to_currency, to_type, to_country, to_bank,
@@ -91,11 +93,18 @@ async def callback_update_convert(callback: types.CallbackQuery):
                            print_=False)
 
     # log.logger.debug(msg)
+    if msg == "" or msg is None:
+        total = create_rate(from_currency, from_type, from_country, from_bank,
+                            to_currency, to_type, to_country, to_bank,
+                            "total", 0, "from")
+        msg = format_rates([total], result_format=user.message_format, print_=False)
 
-    await update_message(callback.message, msg,
-                         from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank)
+    if prev_msg != msg:
+        await update_message(callback.message, msg,
+                             from_currency, from_type, from_country, from_bank,
+                             to_currency, to_type, to_country, to_bank)
 
+    await callback.answer()
     # log.logger.debug("Convert updated")
 
 
@@ -116,6 +125,8 @@ async def callback_update_from_currency(callback: types.CallbackQuery):
                          from_currency, from_type, from_country, from_bank,
                          to_currency, to_type, to_country, to_bank)
 
+    await callback.answer()
+
 
 async def callback_update_to_currency(callback: types.CallbackQuery):
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank = \
@@ -133,6 +144,8 @@ async def callback_update_to_currency(callback: types.CallbackQuery):
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
                          to_currency, to_type, to_country, to_bank)
+
+    await callback.answer()
 
 
 async def callback_update_from_union_type(callback: types.CallbackQuery):
@@ -168,6 +181,8 @@ async def callback_update_from_union_type(callback: types.CallbackQuery):
                          from_currency, from_type, from_country, from_bank,
                          to_currency, to_type, to_country, to_bank)
 
+    await callback.answer()
+
 
 async def callback_update_to_union_type(callback: types.CallbackQuery):
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank = \
@@ -201,6 +216,8 @@ async def callback_update_to_union_type(callback: types.CallbackQuery):
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
                          to_currency, to_type, to_country, to_bank)
+
+    await callback.answer()
 
 
 async def handle_convert_all(message: types.Message, state: FSMContext):

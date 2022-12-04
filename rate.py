@@ -24,11 +24,16 @@ def create_rate(from_currency, from_type, from_country, from_bank,
     if to_bank is None:
         to_bank = ""
 
+    if value is not None and value != 0:
+        reversed_value = 1 / value
+    else:
+        value = "-"
+        reversed_value = "-"
     if value_type == "from":
         value_from = value
-        value_to = 1 / value
+        value_to = reversed_value
     else:
-        value_from = 1 / value
+        value_from = reversed_value
         value_to = value
     return {
         "from_currency": from_currency,
