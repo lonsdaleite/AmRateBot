@@ -91,9 +91,9 @@ def inline_banks(exclude_banks):
         bank_key = const.LIST_ALL_BANKS[num]
         bank = const.ALL_BANKS[bank_key]
         if bank_key in exclude_banks:
-            bank += " 0"
+            bank += " ❌"
         else:
-            bank += " 1"
+            bank += " ✅"
         buttons.append([types.InlineKeyboardButton(text=bank,
                                                    callback_data="bb_" + bank_key + callback_data_suffix)])
     buttons.append([types.InlineKeyboardButton(text="Обновить информацию",
