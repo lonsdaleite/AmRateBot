@@ -46,18 +46,26 @@ def update_user_info(user_id, tg_id=None, message_format=None, exclude_banks=Non
             """, (message_format, user_id))
 
     if exclude_banks is not None:
+        if len(exclude_banks) == 0:
+            exclude_banks_str = None
+        else:
+            exclude_banks_str = ",".join(exclude_banks)
         cursor.execute("""
             UPDATE user
             SET exclude_banks = ?
             WHERE user_id = ? and deleted_flg = '0'
-            """, (",".join(exclude_banks), user_id))
+            """, (exclude_banks_str, user_id))
 
     if exclude_methods is not None:
+        if len(exclude_methods) == 0:
+            exclude_methods_str = None
+        else:
+            exclude_methods_str = ",".join(exclude_methods)
         cursor.execute("""
             UPDATE user
             SET exclude_methods = ?
             WHERE user_id = ? and deleted_flg = '0'
-            """, (",".join(exclude_methods), user_id))
+            """, (exclude_methods_str, user_id))
 
     if uncertainty is not None:
         cursor.execute("""

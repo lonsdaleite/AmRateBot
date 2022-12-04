@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 import re
 import bot.common
 import const
+import log
 from bot import user_state, bot_reply_markup
 from bot.handlers.base import validate
 
@@ -123,5 +124,51 @@ async def callback_update_exclude_banks(callback: types.CallbackQuery):
     user.update_user_info(exclude_banks=exclude_banks)
     await callback.message.edit_text(
         "Информация о банках обновлена",
+        reply_markup=None)
+    await callback.answer()
+
+
+async def handle_set_broker(message: types.Message, state: FSMContext):
+    user = await validate(message, state)
+    if user is None:
+        return
+
+    msg = "Выбери брокера, к которому есть доступ"
+    await bot.common.send_message(user.tg_id, msg, reply_markup=bot_reply_markup.inline_broker(user.exclude_methods))
+
+
+async def callback_update_broker_button(callback: types.CallbackQuery):
+    user = bot.common.get_user(tg_id=callback.from_user.id)
+    exclude_methods = user.exclude_methods.copy()
+    was_included = callback.data.split("#")[1]
+    if was_included == "1":
+        exclude = True
+    else:
+        exclude = False
+    if not exclude and "broker" in exclude_methods:
+        exclude_methods.remove("broker")
+    elif exclude and "broker" not in exclude_methods:
+        exclude_methods.append("broker")
+
+    await callback.message.edit_text(
+        callback.message.text,
+        reply_markup=bot_reply_markup.inline_broker(exclude_methods))
+    await callback.answer()
+
+
+async def callback_update_exclude_broker(callback: types.CallbackQuery):
+    user = bot.common.get_user(tg_id=callback.from_user.id)
+    exclude_methods = user.exclude_methods.copy()
+    if callback.data.split("#")[1] == "1":
+        include = True
+    else:
+        include = False
+    if include and "broker" in exclude_methods:
+        exclude_methods.remove("broker")
+    elif not include and "broker" not in exclude_methods:
+        exclude_methods.append("broker")
+    user.update_user_info(exclude_methods=exclude_methods)
+    await callback.message.edit_text(
+        "Информация о бирже обновлена",
         reply_markup=None)
     await callback.answer()

@@ -100,3 +100,20 @@ def inline_banks(exclude_banks):
                                                callback_data="ub_" + callback_data_suffix)])
     markup = types.InlineKeyboardMarkup(inline_keyboard=buttons)
     return markup
+
+
+def inline_broker(exclude_methods):
+    callback_data_suffix = "#"
+    callback_text = "Tinkoff Broker "
+    if "broker" in exclude_methods:
+        callback_text += " ❌"
+        callback_data_suffix += "0"
+    else:
+        callback_text += " ✅"
+        callback_data_suffix += "1"
+    buttons = [[types.InlineKeyboardButton(text=callback_text,
+                                           callback_data="button_broker" + callback_data_suffix)],
+               [types.InlineKeyboardButton(text="Обновить информацию",
+                                           callback_data="upd_broker" + callback_data_suffix)]]
+    markup = types.InlineKeyboardMarkup(inline_keyboard=buttons)
+    return markup

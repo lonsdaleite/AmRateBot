@@ -25,13 +25,13 @@ class User:
 
         if user_info is not None:
             tmp_exclude_banks = user_info["exclude_banks"]
-            if tmp_exclude_banks is None:
+            if tmp_exclude_banks is None or tmp_exclude_banks == "":
                 tmp_exclude_banks = []
             else:
                 tmp_exclude_banks = tmp_exclude_banks.split(",")
 
             tmp_exclude_methods = user_info["exclude_methods"]
-            if tmp_exclude_methods is None:
+            if tmp_exclude_methods is None or tmp_exclude_methods == "":
                 tmp_exclude_methods = []
             else:
                 tmp_exclude_methods = tmp_exclude_methods.split(",")

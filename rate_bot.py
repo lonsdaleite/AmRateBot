@@ -10,7 +10,8 @@ from bot.handlers.convert import handle_convert, callback_update_convert, \
     callback_update_to_union_type, handle_convert_all
 from bot.handlers.settings import handle_settings, handle_set_message_format, handle_action_set_message_format, \
     settings_dict, handle_set_uncertainty, handle_action_set_uncertainty, callback_update_exclude_banks, \
-    callback_update_bank_button, handle_set_banks
+    callback_update_bank_button, handle_set_banks, handle_set_broker, callback_update_broker_button, \
+    callback_update_exclude_broker
 
 
 def register_handlers_main():
@@ -35,6 +36,10 @@ def register_handlers_main():
                                                                    settings_dict['banks']],
                                            state=[user_state.InitialState.waiting_for_settings])
 
+    bot.common.dp.register_message_handler(handle_set_broker, text=['/broker',
+                                                                    settings_dict['broker']],
+                                           state=[user_state.InitialState.waiting_for_settings])
+
     bot.common.dp.register_message_handler(handle_settings, text=['/settings', main_command_dict['settings']])
     bot.common.dp.register_message_handler(handle_convert_all, text=['/convert_all'])  # Hidden method
     bot.common.dp.register_message_handler(handle_convert, text=['/convert', main_command_dict['convert']])
@@ -43,6 +48,11 @@ def register_handlers_main():
     bot.common.dp.register_callback_query_handler(callback_update_bank_button, regexp=re.compile(r"^bb_.*"),
                                                   state=[user_state.InitialState.waiting_for_settings])
     bot.common.dp.register_callback_query_handler(callback_update_exclude_banks, regexp=re.compile(r"^ub_.*"),
+                                                  state=[user_state.InitialState.waiting_for_settings])
+
+    bot.common.dp.register_callback_query_handler(callback_update_broker_button, regexp=re.compile(r"^button_broker.*"),
+                                                  state=[user_state.InitialState.waiting_for_settings])
+    bot.common.dp.register_callback_query_handler(callback_update_exclude_broker, regexp=re.compile(r"^upd_broker.*"),
                                                   state=[user_state.InitialState.waiting_for_settings])
 
     bot.common.dp.register_callback_query_handler(callback_update_convert, regexp=re.compile(r"^update.*"))
