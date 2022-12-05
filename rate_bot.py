@@ -4,7 +4,8 @@ import bot.common
 from add_rates import add_all_rates
 from bot import update_rates, user_state
 from bot.db import sql_init
-from bot.handlers.base import handle_start, handle_welcome, handle_action_user_accept, handle_cancel, main_command_dict
+from bot.handlers.base import handle_start, handle_welcome, handle_action_user_accept, handle_cancel, main_command_dict, \
+    handle_help
 from bot.handlers.convert import handle_convert, callback_update_convert, \
     callback_update_from_currency, callback_update_to_currency, callback_update_from_union_type, \
     callback_update_to_union_type, handle_convert_all
@@ -16,7 +17,8 @@ from bot.handlers.settings import handle_settings, handle_set_message_format, ha
 
 def register_handlers_main():
     add_all_rates(bot.common.all_rates)
-    bot.common.dp.register_message_handler(handle_start, commands=['start', 'help'], state='*')
+    bot.common.dp.register_message_handler(handle_start, commands=['start'], state='*')
+    bot.common.dp.register_message_handler(handle_help, text=['/help', main_command_dict['help']], state='*')
     bot.common.dp.register_message_handler(handle_cancel,
                                            text=['/cancel', 'Отмена', 'Главное меню'],
                                            state='*')
@@ -55,15 +57,15 @@ def register_handlers_main():
     bot.common.dp.register_callback_query_handler(callback_update_exclude_broker, regexp=re.compile(r"^upd_broker.*"),
                                                   state=[user_state.InitialState.waiting_for_settings])
 
-    bot.common.dp.register_callback_query_handler(callback_update_convert, regexp=re.compile(r"^update.*"))
+    bot.common.dp.register_callback_query_handler(callback_update_convert, regexp=re.compile(r"^update.*"), state='*')
     bot.common.dp.register_callback_query_handler(callback_update_from_currency,
-                                                  regexp=re.compile(r"^from_currency.*"))
+                                                  regexp=re.compile(r"^from_currency.*"), state='*')
     bot.common.dp.register_callback_query_handler(callback_update_to_currency,
-                                                  regexp=re.compile(r"^to_currency.*"))
+                                                  regexp=re.compile(r"^to_currency.*"), state='*')
     bot.common.dp.register_callback_query_handler(callback_update_from_union_type,
-                                                  regexp=re.compile(r"^from_union_type.*"))
+                                                  regexp=re.compile(r"^from_union_type.*"), state='*')
     bot.common.dp.register_callback_query_handler(callback_update_to_union_type,
-                                                  regexp=re.compile(r"^to_union_type.*"))
+                                                  regexp=re.compile(r"^to_union_type.*"), state='*')
 
 
 sql_init.run_scripts()

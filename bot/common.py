@@ -41,15 +41,17 @@ async def print_log(user, message, state, command_dict=None):
     log.logger.debug("ID: " + str(tg_id) + ", state: " + user_state + ", message: " + text)
 
 
-async def send_message(tg_id, text, parse_mode=None, reply_markup=None):
+async def send_message(tg_id, text, parse_mode=None, reply_markup=None, disable_web_page_preview=True):
     # log.logger.debug("tg_id: " + str(tg_id), ", message:\n" + text)
     try:
         if bot_config.DEBUG_TG_ID is not None:
             await bot.send_message(bot_config.DEBUG_TG_ID, "Message to " + str(tg_id) + "\n" + text,
                                    parse_mode=parse_mode,
-                                   reply_markup=reply_markup)
+                                   reply_markup=reply_markup,
+                                   disable_web_page_preview=disable_web_page_preview)
         else:
-            await bot.send_message(tg_id, text, parse_mode=parse_mode, reply_markup=reply_markup)
+            await bot.send_message(tg_id, text, parse_mode=parse_mode, reply_markup=reply_markup,
+                                   disable_web_page_preview=disable_web_page_preview)
     except BotBlocked:
         log.logger.warn("Bot blocked for user: " + str(tg_id))
     except:

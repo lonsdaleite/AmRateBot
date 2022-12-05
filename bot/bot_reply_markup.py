@@ -104,7 +104,7 @@ def inline_banks(exclude_banks):
 
 def inline_broker(exclude_methods):
     callback_data_suffix = "#"
-    callback_text = "Tinkoff Broker "
+    callback_text = "Tinkoff Инвестиции "
     if "broker" in exclude_methods:
         callback_text += " ❌"
         callback_data_suffix += "0"
