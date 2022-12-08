@@ -4,7 +4,6 @@ from aiogram.utils.exceptions import MessageNotModified
 
 import bot.common
 import const
-import log
 from bot import bot_reply_markup
 from bot.handlers.base import validate, main_command_dict
 from format import format_rates

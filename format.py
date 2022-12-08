@@ -11,9 +11,9 @@ def format_rates(rates, result_format="wide", print_=False):
     table.header = False
     table.align = 'l'
     if result_format == "wide":
-        table.add_row(['#', 'From', 'To', 'Method', 'Rate'])
+        table.add_row(['#', 'Из', 'В', 'Метод', 'Курс'])
     else:
-        table.add_row(['#', 'From\nMethod', 'To\nRate'])
+        table.add_row(['#', 'Из\nМетод', 'В\nКурс'])
 
     for rate_num, rate in enumerate(rates):
         format_from_currency = ALL_CURRENCIES[rate["from_currency"]]

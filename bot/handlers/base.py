@@ -74,7 +74,7 @@ async def validate(message: types.Message, state):
     return user
 
 
-async def request_user_accept(message: types.Message, state):
+async def request_user_accept(message: types.Message, state: FSMContext):
     tg_id = message.from_user.id
 
     msg = "Привет! Я бот, который помогает получить лучшие курсы конвертации валют в Армении!\n" \

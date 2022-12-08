@@ -11,14 +11,13 @@ LIST_CURRENCIES = list(ALL_CURRENCIES.keys())
 CONVERT_CASH = OrderedDict({"cash": "Наличные"})
 
 CONVERT_RU_BANKS = OrderedDict({
-    "": "Любой банк РФ",
     "tinkoff": "Tinkoff",
-    "raif": "Raiffeisen"
+    "raif": "Raiffeisen",
+    "": "Банк РФ"
 })
 LIST_RU_BANKS = list(CONVERT_RU_BANKS.keys())
 
 CONVERT_AM_BANKS = OrderedDict({
-    "": "Любой банк РА",
     "acba-bank": "Acba Bank",
     "ameriabank": "Ameriabank",
     "araratbank": "AraratBank",
@@ -36,14 +35,15 @@ CONVERT_AM_BANKS = OrderedDict({
     "konvers-bank": "Converse Bank",
     "mellat-bank": "Mellat Bank",
     "vtbhayastan-bank": "VTB",
-    "yunibank": "Unibank"
+    "yunibank": "Unibank",
+    "": "Банк РА"
 })
 LIST_AM_BANKS = list(CONVERT_AM_BANKS.keys())
 
 ALL_BANKS = OrderedDict()
 ALL_BANKS.update(CONVERT_AM_BANKS)
 ALL_BANKS.update(CONVERT_RU_BANKS)
-ALL_BANKS[""] = "Любой банк"
+ALL_BANKS[""] = "Банк"
 LIST_ALL_BANKS = list(ALL_BANKS.keys())
 
 DEFAULT_EXCLUDE_BANKS = [x for x in ALL_BANKS if x != ""]
@@ -51,14 +51,14 @@ DEFAULT_EXCLUDE_BANKS = [x for x in ALL_BANKS if x != ""]
 ALL_METHODS = OrderedDict({
     "": "",
     "atm": "ATM",
-    "bank": "Bank",
-    "broker": "Broker",
-    "convert": "Convert",
+    "bank": "Банк",
+    "broker": "Биржа",
+    "convert": "Обмен",
     "idpay": "IDpay",
     "sas": "SAS",
     "swift": "Swift",
-    "total": "Total",
-    "transfer": "Transfer",
+    "total": "Итого",
+    "transfer": "Перевод",
     "unistream": "Unistream"
 })
 
