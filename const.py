@@ -41,9 +41,9 @@ CONVERT_AM_BANKS = OrderedDict({
 LIST_AM_BANKS = list(CONVERT_AM_BANKS.keys())
 
 ALL_BANKS = OrderedDict()
+ALL_BANKS[""] = "Банк"
 ALL_BANKS.update(CONVERT_AM_BANKS)
 ALL_BANKS.update(CONVERT_RU_BANKS)
-ALL_BANKS[""] = "Банк"
 LIST_ALL_BANKS = list(ALL_BANKS.keys())
 
 DEFAULT_EXCLUDE_BANKS = [x for x in ALL_BANKS if x != ""]
@@ -62,4 +62,4 @@ ALL_METHODS = OrderedDict({
     "unistream": "Unistream"
 })
 
-DEFAULT_EXCLUDE_METHODS = ["broker"]
+DEFAULT_EXCLUDE_METHODS = []
