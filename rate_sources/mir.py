@@ -34,7 +34,7 @@ def add_mir(url="https://mironline.ru/support/list/kursy_mir/", all_rates=None):
                 if currency.text.strip() == "Армянский драм":
                     value = currency.findNext("p")
                     result = float(value.text.strip().replace(",", "."))
-                    add_rate(all_rates, "rur", "bank", "ru", "", "amd", "cash", "am", "", "atm", result, "to")
+                    add_rate(all_rates, "rur", "bank", "ru", "", "amd", "cash", "am", "", "atm", result, "from")
                     break
     except Exception as e:
         log.logger.error(e)
