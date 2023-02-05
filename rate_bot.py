@@ -17,7 +17,6 @@ from bot.handlers.settings import handle_settings, handle_set_message_format, ha
 
 
 def register_handlers_main():
-    add_all_rates(bot.common.all_rates)
     bot.common.dp.register_message_handler(handle_start, commands=['start'], state='*')
     bot.common.dp.register_message_handler(handle_help, text=['/help', main_command_dict['help']], state='*')
     bot.common.dp.register_message_handler(handle_cancel,
@@ -76,6 +75,6 @@ def register_handlers_main():
 
 
 sql_init.run_scripts()
-
+add_all_rates(bot.common.all_rates)
 register_handlers_main()
 executor.start_polling(bot.common.dp, skip_updates=False, on_startup=update_rates.run)

@@ -57,13 +57,17 @@ async def handle_help(message: types.Message, state: FSMContext):
 # All the handlers call it first
 # If user accepted the conversation, returns a User object
 # Else returns None
-async def validate(message: types.Message, state):
-    user = bot.common.get_user(message=message)
-    await bot.common.print_log(user, message, state)
+async def validate(message: types.Message = None, state: FSMContext = None, callback: types.CallbackQuery = None):
+    if callback is not None:
+        user = bot.common.get_user(tg_id=callback.from_user.id)
+        await bot.common.print_log(user, callback.message, state, callback)
+    else:
+        user = bot.common.get_user(message=message)
+        await bot.common.print_log(user, message, state)
 
-    if user is None:
-        await request_user_accept(message, state)
-        return None
+        if user is None:
+            await request_user_accept(message, state)
+            return None
 
     # current_state = await state.get_state()
     #

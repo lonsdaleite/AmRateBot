@@ -47,7 +47,7 @@ async def handle_action_set_message_format(message: types.Message, state: FSMCon
             user.update_user_info(message_format="wide")
         await state.set_state(user_state.InitialState.waiting_for_settings)
         msg = "ОК!"
-        await bot.common.send_message(user.tg_id, msg, reply_markup=bot_reply_markup.dict_menu(settings_dict, 2))
+        await bot.common.send_message(user.tg_id, msg, reply_markup=bot_reply_markup.dict_menu(settings_dict, 1))
     else:
         await handle_set_message_format(message, state)
 
@@ -104,6 +104,10 @@ async def handle_set_banks(message: types.Message, state: FSMContext):
 
 
 async def callback_update_bank_button(callback: types.CallbackQuery):
+    user = await validate(callback=callback)
+    if user is None:
+        return
+
     exclude_banks = parse_banks_callback_suffix(callback.data)
     bank = callback.data.split("#")[0].split("_")[1]
     if bank in exclude_banks:
@@ -118,7 +122,10 @@ async def callback_update_bank_button(callback: types.CallbackQuery):
 
 
 async def callback_update_exclude_banks(callback: types.CallbackQuery):
-    user = bot.common.get_user(tg_id=callback.from_user.id)
+    user = await validate(callback=callback)
+    if user is None:
+        return
+
     exclude_banks = parse_banks_callback_suffix(callback.data)
     user.update_user_info(exclude_banks=exclude_banks)
     await callback.message.edit_text(
@@ -137,7 +144,10 @@ async def callback_update_exclude_banks(callback: types.CallbackQuery):
 #
 #
 # async def callback_update_broker_button(callback: types.CallbackQuery):
-#     user = bot.common.get_user(tg_id=callback.from_user.id)
+#     user = await validate(callback=callback)
+#     if user is None:
+#         return
+#
 #     exclude_methods = user.exclude_methods.copy()
 #     was_included = callback.data.split("#")[1]
 #     if was_included == "1":
@@ -156,7 +166,10 @@ async def callback_update_exclude_banks(callback: types.CallbackQuery):
 #
 #
 # async def callback_update_exclude_broker(callback: types.CallbackQuery):
-#     user = bot.common.get_user(tg_id=callback.from_user.id)
+#     user = await validate(callback=callback)
+#     if user is None:
+#         return
+#
 #     exclude_methods = user.exclude_methods.copy()
 #     if callback.data.split("#")[1] == "1":
 #         include = True

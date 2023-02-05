@@ -1,5 +1,5 @@
 import traceback
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.utils.exceptions import BotBlocked
 import bot.config as bot_config
@@ -14,10 +14,12 @@ dp = Dispatcher(bot, storage=MemoryStorage())
 all_rates = []
 
 
-async def print_log(user, message, state, command_dict=None):
+async def print_log(user, message, state, callback: types.CallbackQuery = None, command_dict=None):
     tg_id = message.from_user.id
     text = "No text"
-    if message.text is not None:
+    if callback is not None:
+        text = callback.data
+    elif message.text is not None:
         text = message.text
     elif message.caption is not None:
         text = message.caption

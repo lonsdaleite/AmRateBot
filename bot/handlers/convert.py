@@ -119,7 +119,9 @@ async def callback_update_convert(callback: types.CallbackQuery):
 
 async def get_convert(callback, from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank,
                       online_only, broker, result_num):
-    user = bot.common.get_user(tg_id=callback.from_user.id)
+    user = await validate(callback=callback)
+    if user is None:
+        return
     # callback_data_suffix = "#" + from_currency + "#" + from_type + "#" + from_country + "#" + from_bank + \
     #                        "#" + to_currency + "#" + to_type + "#" + to_bank + "#" + to_bank
     # log.logger.debug(callback_data_suffix)
@@ -169,6 +171,10 @@ def next_currency(currency):
 
 
 async def callback_update_from_currency(callback: types.CallbackQuery):
+    user = await validate(callback=callback)
+    if user is None:
+        return
+
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
     result_num = -1
@@ -184,6 +190,10 @@ async def callback_update_from_currency(callback: types.CallbackQuery):
 
 
 async def callback_update_to_currency(callback: types.CallbackQuery):
+    user = await validate(callback=callback)
+    if user is None:
+        return
+
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
     result_num = -1
@@ -237,7 +247,10 @@ def next_union_type(country, type_, bank, online_only, user):
 
 
 async def callback_update_from_union_type(callback: types.CallbackQuery):
-    user = bot.common.get_user(tg_id=callback.from_user.id)
+    user = await validate(callback=callback)
+    if user is None:
+        return
+
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
     result_num = -1
@@ -253,7 +266,10 @@ async def callback_update_from_union_type(callback: types.CallbackQuery):
 
 
 async def callback_update_to_union_type(callback: types.CallbackQuery):
-    user = bot.common.get_user(tg_id=callback.from_user.id)
+    user = await validate(callback=callback)
+    if user is None:
+        return
+
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
     result_num = -1
@@ -269,7 +285,10 @@ async def callback_update_to_union_type(callback: types.CallbackQuery):
 
 
 async def callback_update_online_only(callback: types.CallbackQuery):
-    user = bot.common.get_user(tg_id=callback.from_user.id)
+    user = await validate(callback=callback)
+    if user is None:
+        return
+
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
     result_num = -1
@@ -292,6 +311,10 @@ async def callback_update_online_only(callback: types.CallbackQuery):
 
 
 async def callback_update_broker(callback: types.CallbackQuery):
+    user = await validate(callback=callback)
+    if user is None:
+        return
+
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
     result_num = -1
