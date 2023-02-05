@@ -230,10 +230,6 @@ def get_best_convert(rates,
     if best_result_num != -1:
         best_price = all_price_list[best_result_num]
         best_steps = all_steps_list[best_result_num]
-    # for num, price in enumerate(all_price_list):
-    #     if best_price is None or best_price > price:
-    #         best_price = price
-    #         best_steps = all_steps_list[num]
 
     # Find shorter steps with almost the same price
     # if allow_uncertainty >= 0:

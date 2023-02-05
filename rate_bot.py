@@ -10,9 +10,10 @@ from bot.handlers.convert import handle_convert, callback_update_convert, callba
     callback_update_from_currency, callback_update_to_currency, callback_update_from_union_type, \
     callback_update_to_union_type, handle_convert_all, callback_update_online_only, callback_update_broker
 from bot.handlers.settings import handle_settings, handle_set_message_format, handle_action_set_message_format, \
-    settings_dict, handle_set_uncertainty, handle_action_set_uncertainty, callback_update_exclude_banks, \
+    settings_dict, callback_update_exclude_banks, \
     callback_update_bank_button, handle_set_banks
-# from bot.handlers.settings import handle_set_broker, callback_update_broker_button, callback_update_exclude_broker
+# from bot.handlers.settings import handle_set_broker, callback_update_broker_button, callback_update_exclude_broker, \
+# handle_set_uncertainty, handle_action_set_uncertainty
 
 
 def register_handlers_main():
@@ -28,11 +29,11 @@ def register_handlers_main():
                                            state=[user_state.InitialState.waiting_for_settings])
     bot.common.dp.register_message_handler(handle_action_set_message_format,
                                            state=[user_state.InitialState.waiting_for_set_message_format])
-    bot.common.dp.register_message_handler(handle_set_uncertainty, text=['/uncertainty',
-                                                                         settings_dict['uncertainty']],
-                                           state=[user_state.InitialState.waiting_for_settings])
-    bot.common.dp.register_message_handler(handle_action_set_uncertainty,
-                                           state=[user_state.InitialState.waiting_for_set_uncertainty])
+    # bot.common.dp.register_message_handler(handle_set_uncertainty, text=['/uncertainty',
+    #                                                                      settings_dict['uncertainty']],
+    #                                        state=[user_state.InitialState.waiting_for_settings])
+    # bot.common.dp.register_message_handler(handle_action_set_uncertainty,
+    #                                        state=[user_state.InitialState.waiting_for_set_uncertainty])
 
     bot.common.dp.register_message_handler(handle_set_banks, text=['/banks',
                                                                    settings_dict['banks']],

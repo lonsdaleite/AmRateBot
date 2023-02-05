@@ -10,7 +10,7 @@ settings_dict = dict(
     banks='Список банков',
     # broker='Настройки биржи',
     message_format='Формат сообщения',
-    uncertainty='Погрешность',
+    # uncertainty='Погрешность',
     cancel='Главное меню')
 message_format_dict = dict(mobile='Мобильный', full='Полноразмерный', back='Назад')
 
