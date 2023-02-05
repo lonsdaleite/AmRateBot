@@ -28,7 +28,7 @@ async def handle_convert(message: types.Message, state: FSMContext):
                            to_currency, to_type, to_country, to_bank,
                            allow_uncertainty=user.uncertainty,
                            result_format=user.message_format,
-                           exclude_methods=user.exclude_methods,
+                           exclude_methods=user.exclude_methods + ["broker"],
                            exclude_banks=user.exclude_banks,
                            print_=False)
     await bot.common.send_message(message.from_user.id, f"<pre>{msg}</pre>",
