@@ -85,8 +85,10 @@ async def update_message(message, text,
 async def callback_prev_convert(callback: types.CallbackQuery):
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
-
-    result_num -= 1
+    if result_num < 0:
+        result_num = 0
+    else:
+        result_num -= 1
 
     await get_convert(callback, from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country,
                       to_bank,
@@ -96,8 +98,10 @@ async def callback_prev_convert(callback: types.CallbackQuery):
 async def callback_next_convert(callback: types.CallbackQuery):
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
-
-    result_num += 1
+    if result_num < 0:
+        result_num = 0
+    else:
+        result_num += 1
 
     await get_convert(callback, from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country,
                       to_bank,
@@ -107,7 +111,6 @@ async def callback_next_convert(callback: types.CallbackQuery):
 async def callback_update_convert(callback: types.CallbackQuery):
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
-
     result_num = 0
 
     await get_convert(callback, from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank,
@@ -168,6 +171,7 @@ def next_currency(currency):
 async def callback_update_from_currency(callback: types.CallbackQuery):
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
+    result_num = -1
 
     from_currency = next_currency(from_currency)
 
@@ -182,6 +186,7 @@ async def callback_update_from_currency(callback: types.CallbackQuery):
 async def callback_update_to_currency(callback: types.CallbackQuery):
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
+    result_num = -1
 
     to_currency = next_currency(to_currency)
 
@@ -235,6 +240,7 @@ async def callback_update_from_union_type(callback: types.CallbackQuery):
     user = bot.common.get_user(tg_id=callback.from_user.id)
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
+    result_num = -1
 
     from_country, from_type, from_bank = next_union_type(from_country, from_type, from_bank, online_only, user)
 
@@ -250,6 +256,7 @@ async def callback_update_to_union_type(callback: types.CallbackQuery):
     user = bot.common.get_user(tg_id=callback.from_user.id)
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
+    result_num = -1
 
     to_country, to_type, to_bank = next_union_type(to_country, to_type, to_bank, online_only, user)
 
@@ -265,6 +272,7 @@ async def callback_update_online_only(callback: types.CallbackQuery):
     user = bot.common.get_user(tg_id=callback.from_user.id)
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
+    result_num = -1
 
     if online_only:
         online_only = False
@@ -286,6 +294,7 @@ async def callback_update_online_only(callback: types.CallbackQuery):
 async def callback_update_broker(callback: types.CallbackQuery):
     from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
         result_num = parse_callback_data(callback.data)
+    result_num = -1
 
     if broker:
         broker = False
