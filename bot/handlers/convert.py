@@ -23,9 +23,10 @@ async def handle_convert(message: types.Message, state: FSMContext):
     to_type = "cash"
     to_country = "am"
     to_bank = ""
-    msg = get_best_convert(bot.common.all_rates,
+    msg, result_num = get_best_convert(bot.common.all_rates,
                            from_currency, from_type, from_country, from_bank,
                            to_currency, to_type, to_country, to_bank,
+                           result_num=0,
                            allow_uncertainty=user.uncertainty,
                            result_format=user.message_format,
                            exclude_methods=user.exclude_methods + ["broker"],
@@ -35,29 +36,36 @@ async def handle_convert(message: types.Message, state: FSMContext):
                                   parse_mode=types.ParseMode.HTML,
                                   reply_markup=bot_reply_markup.inline_convert(
                                       from_currency, from_type, from_country, from_bank,
-                                      to_currency, to_type, to_country, to_bank, False, False))
+                                      to_currency, to_type, to_country, to_bank, False, False, result_num))
 
     await bot.common.send_message(message.from_user.id,
                                   "Нажимайте на кнопки под сообщением, чтобы изменить параметры конвертации")
 
 
 def parse_callback_data(data):
-    from_currency = data.split("#")[1]
-    from_type = data.split("#")[2]
-    from_country = data.split("#")[3]
-    from_bank = data.split("#")[4]
-    to_currency = data.split("#")[5]
-    to_type = data.split("#")[6]
-    to_country = data.split("#")[7]
-    to_bank = data.split("#")[8]
-    online_only = bool(int(data.split("#")[9]))
-    broker = bool(int(data.split("#")[10]))
-    return from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker
+    splitted_data = data.split("#")
+    from_currency = splitted_data[1]
+    from_type = splitted_data[2]
+    from_country = splitted_data[3]
+    from_bank = splitted_data[4]
+    to_currency = splitted_data[5]
+    to_type = splitted_data[6]
+    to_country = splitted_data[7]
+    to_bank = splitted_data[8]
+    online_only = bool(int(splitted_data[9]))
+    broker = bool(int(splitted_data[10]))
+    # Backward compatibility
+    if len(splitted_data) > 11:
+        result_num = int(splitted_data[11])
+    else:
+        result_num = 0
+    return from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, \
+        online_only, broker, result_num
 
 
 async def update_message(message, text,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker):
+                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num):
     try:
         await message.edit_text(
             f"<pre>{text}</pre>",
@@ -65,7 +73,7 @@ async def update_message(message, text,
             reply_markup=bot_reply_markup.inline_convert(
                 from_currency, from_type, from_country, from_bank,
                 to_currency, to_type, to_country, to_bank,
-                online_only, broker))
+                online_only, broker, result_num))
     except MessageNotModified:
         pass
         # log.logger.trace("Message not modified")
@@ -74,12 +82,41 @@ async def update_message(message, text,
     #                  to_currency + " " + to_type + " " + to_country + " " + to_bank)
 
 
+async def callback_prev_convert(callback: types.CallbackQuery):
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+        result_num = parse_callback_data(callback.data)
+
+    result_num -= 1
+
+    await get_convert(callback, from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country,
+                      to_bank,
+                      online_only, broker, result_num)
+
+
+async def callback_next_convert(callback: types.CallbackQuery):
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+        result_num = parse_callback_data(callback.data)
+
+    result_num += 1
+
+    await get_convert(callback, from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country,
+                      to_bank,
+                      online_only, broker, result_num)
+
+
 async def callback_update_convert(callback: types.CallbackQuery):
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+        result_num = parse_callback_data(callback.data)
+
+    result_num = 0
+
+    await get_convert(callback, from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank,
+                      online_only, broker, result_num)
+
+
+async def get_convert(callback, from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank,
+                      online_only, broker, result_num):
     user = bot.common.get_user(tg_id=callback.from_user.id)
-
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker = \
-        parse_callback_data(callback.data)
-
     # callback_data_suffix = "#" + from_currency + "#" + from_type + "#" + from_country + "#" + from_bank + \
     #                        "#" + to_currency + "#" + to_type + "#" + to_bank + "#" + to_bank
     # log.logger.debug(callback_data_suffix)
@@ -90,9 +127,10 @@ async def callback_update_convert(callback: types.CallbackQuery):
     if not broker:
         extra_exclude_methods += ["broker"]
     prev_msg = callback.message.text
-    msg = get_best_convert(bot.common.all_rates,
+    msg, result_num = get_best_convert(bot.common.all_rates,
                            from_currency, from_type, from_country, from_bank,
                            to_currency, to_type, to_country, to_bank,
+                           result_num=result_num,
                            allow_uncertainty=user.uncertainty,
                            result_format=user.message_format,
                            exclude_methods=user.exclude_methods + extra_exclude_methods,
@@ -109,7 +147,7 @@ async def callback_update_convert(callback: types.CallbackQuery):
     if prev_msg != msg:
         await update_message(callback.message, msg,
                              from_currency, from_type, from_country, from_bank,
-                             to_currency, to_type, to_country, to_bank, online_only, broker)
+                             to_currency, to_type, to_country, to_bank, online_only, broker, result_num)
 
     await callback.answer()
     # log.logger.debug("Convert updated")
@@ -128,29 +166,29 @@ def next_currency(currency):
 
 
 async def callback_update_from_currency(callback: types.CallbackQuery):
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker = \
-        parse_callback_data(callback.data)
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+        result_num = parse_callback_data(callback.data)
 
     from_currency = next_currency(from_currency)
 
     msg = callback.message.text
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker)
+                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num)
 
     await callback.answer()
 
 
 async def callback_update_to_currency(callback: types.CallbackQuery):
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker = \
-        parse_callback_data(callback.data)
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+        result_num = parse_callback_data(callback.data)
 
     to_currency = next_currency(to_currency)
 
     msg = callback.message.text
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker)
+                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num)
 
     await callback.answer()
 
@@ -195,38 +233,38 @@ def next_union_type(country, type_, bank, online_only, user):
 
 async def callback_update_from_union_type(callback: types.CallbackQuery):
     user = bot.common.get_user(tg_id=callback.from_user.id)
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker = \
-        parse_callback_data(callback.data)
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+        result_num = parse_callback_data(callback.data)
 
     from_country, from_type, from_bank = next_union_type(from_country, from_type, from_bank, online_only, user)
 
     msg = callback.message.text
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker)
+                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num)
 
     await callback.answer()
 
 
 async def callback_update_to_union_type(callback: types.CallbackQuery):
     user = bot.common.get_user(tg_id=callback.from_user.id)
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker = \
-        parse_callback_data(callback.data)
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+        result_num = parse_callback_data(callback.data)
 
     to_country, to_type, to_bank = next_union_type(to_country, to_type, to_bank, online_only, user)
 
     msg = callback.message.text
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker)
+                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num)
 
     await callback.answer()
 
 
 async def callback_update_online_only(callback: types.CallbackQuery):
     user = bot.common.get_user(tg_id=callback.from_user.id)
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker = \
-        parse_callback_data(callback.data)
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+        result_num = parse_callback_data(callback.data)
 
     if online_only:
         online_only = False
@@ -240,14 +278,14 @@ async def callback_update_online_only(callback: types.CallbackQuery):
     msg = callback.message.text
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker)
+                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num)
 
     await callback.answer()
 
 
 async def callback_update_broker(callback: types.CallbackQuery):
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker = \
-        parse_callback_data(callback.data)
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+        result_num = parse_callback_data(callback.data)
 
     if broker:
         broker = False
@@ -257,7 +295,7 @@ async def callback_update_broker(callback: types.CallbackQuery):
     msg = callback.message.text
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker)
+                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num)
 
     await callback.answer()
 
@@ -279,7 +317,7 @@ async def handle_convert_all(message: types.Message, state: FSMContext):
                 ["rur", "bank", "ru", "tinkoff", "amd", "cash", "am", "", ["broker"]]]
 
     for conv in converts:
-        msg = get_best_convert(bot.common.all_rates,
+        msg, result_num = get_best_convert(bot.common.all_rates,
                                conv[0], conv[1], conv[2], conv[3], conv[4], conv[5], conv[6], conv[7],
                                allow_uncertainty=user.uncertainty, result_format=user.message_format, print_=False,
                                exclude_methods=conv[8] + user.exclude_methods, exclude_banks=user.exclude_banks)

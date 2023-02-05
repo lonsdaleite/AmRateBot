@@ -185,12 +185,16 @@ def get_all_convert(rates,
         else:  # If the next step doesn't match
             rate_num += 1
 
+    if len(current_steps) == 0:
+        zipsorted = sorted(zip(all_price_list, all_steps_list), key=lambda x: (x[0], len(x[1])))
+        return [pr for pr, st in zipsorted], [st for pr, st in zipsorted]
     return all_price_list, all_steps_list
 
 
 def get_best_convert(rates,
                      from_currency, from_type, from_country, from_bank,
                      to_currency, to_type, to_country, to_bank,
+                     result_num=0,
                      allow_uncertainty=0,
                      result_format="wide",
                      exclude_methods=None,
@@ -198,10 +202,15 @@ def get_best_convert(rates,
                      print_=False):
     # debug_start_all = timer()
 
+    max_result_num = 9
+
     all_price_list, all_steps_list = get_all_convert(rates,
                                                      from_currency, from_type, from_country, from_bank,
                                                      to_currency, to_type, to_country, to_bank,
                                                      exclude_methods=exclude_methods, exclude_banks=exclude_banks)
+
+    if len(all_price_list) - 1 < max_result_num:
+        max_result_num = len(all_price_list) - 1
 
     # debug_end_all = timer()
     # log.logger.debug("get_all_convert time: " + str(debug_end_all - debug_start_all))
@@ -209,22 +218,34 @@ def get_best_convert(rates,
     # Find the best steps and price
     best_price = None
     best_steps = None
-    for num, price in enumerate(all_price_list):
-        if best_price is None or best_price > price:
-            best_price = price
-            best_steps = all_steps_list[num]
+    if max_result_num == -1:
+        best_result_num = -1
+    elif result_num > max_result_num:
+        best_result_num = 0
+    elif result_num < 0:
+        best_result_num = max_result_num
+    else:
+        best_result_num = result_num
+
+    if best_result_num != -1:
+        best_price = all_price_list[best_result_num]
+        best_steps = all_steps_list[best_result_num]
+    # for num, price in enumerate(all_price_list):
+    #     if best_price is None or best_price > price:
+    #         best_price = price
+    #         best_steps = all_steps_list[num]
 
     # Find shorter steps with almost the same price
-    if allow_uncertainty >= 0:
-        second_best_price = best_price
-        second_best_steps = best_steps
-        for num, price in enumerate(all_price_list):
-            if price <= best_price * (1 + allow_uncertainty) \
-                    and len(all_steps_list[num]) < len(second_best_steps):
-                second_best_price = price
-                second_best_steps = all_steps_list[num]
-        best_price = second_best_price
-        best_steps = second_best_steps
+    # if allow_uncertainty >= 0:
+    #     second_best_price = best_price
+    #     second_best_steps = best_steps
+    #     for num, price in enumerate(all_price_list):
+    #         if price <= best_price * (1 + allow_uncertainty) \
+    #                 and len(all_steps_list[num]) < len(second_best_steps):
+    #             second_best_price = price
+    #             second_best_steps = all_steps_list[num]
+    #     best_price = second_best_price
+    #     best_steps = second_best_steps
 
     # Format output
     result = ""
@@ -237,7 +258,7 @@ def get_best_convert(rates,
     if print_:
         print(result)
 
-    return result
+    return result, best_result_num
 
 # def find_arbitrage(rates, print_=False):
 #     pairs = set([(rate["from_currency"], rate["from_type"]) for rate in rates])

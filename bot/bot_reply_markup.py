@@ -38,12 +38,12 @@ def user_accept():
 
 
 def inline_convert(from_currency, from_type, from_country, from_bank,
-                   to_currency, to_type, to_country, to_bank, online_only, broker):
+                   to_currency, to_type, to_country, to_bank, online_only, broker, result_num=0):
     online_str = str(int(online_only))
     broker_str = str(int(broker))
     callback_data_suffix = "#" + from_currency + "#" + from_type + "#" + from_country + "#" + from_bank + \
                            "#" + to_currency + "#" + to_type + "#" + to_country + "#" + to_bank + \
-                           "#" + online_str + "#" + broker_str
+                           "#" + online_str + "#" + broker_str + "#" + str(result_num)
     from_union_type_text = const.CONVERT_CASH["cash"]
     if from_type != "cash":
         if from_country == "am":
@@ -71,22 +71,24 @@ def inline_convert(from_currency, from_type, from_country, from_bank,
     buttons = [
         [
             types.InlineKeyboardButton(text="Из: " + const.ALL_CURRENCIES[from_currency],
-                                       callback_data="c_from_currency" + callback_data_suffix),
+                                       callback_data="c_from_curr" + callback_data_suffix),
             types.InlineKeyboardButton(text="Из: " + from_union_type_text,
-                                       callback_data="c_from_union_type" + callback_data_suffix)
+                                       callback_data="c_from_union_t" + callback_data_suffix)
         ],
         [
             types.InlineKeyboardButton(text="В: " + const.ALL_CURRENCIES[to_currency],
-                                       callback_data="c_to_currency" + callback_data_suffix),
+                                       callback_data="c_to_curr" + callback_data_suffix),
             types.InlineKeyboardButton(text="В: " + to_union_type_text,
-                                       callback_data="c_to_union_type" + callback_data_suffix)
+                                       callback_data="c_to_union_t" + callback_data_suffix)
         ],
         [
             types.InlineKeyboardButton(text="Только онлайн" + online_suffix,
                                        callback_data="c_online" + callback_data_suffix),
             types.InlineKeyboardButton(text="Биржа" + broker_suffix,
                                        callback_data="c_broker" + callback_data_suffix)],
-        [types.InlineKeyboardButton(text="Получить конвертацию", callback_data="c_update" + callback_data_suffix)]
+        [types.InlineKeyboardButton(text="Лучшая конвертация", callback_data="c_update" + callback_data_suffix)],
+        [types.InlineKeyboardButton(text="<-", callback_data="c_prev" + callback_data_suffix),
+         types.InlineKeyboardButton(text="->", callback_data="c_next" + callback_data_suffix)]
     ]
     markup = types.InlineKeyboardMarkup(inline_keyboard=buttons)
     return markup
