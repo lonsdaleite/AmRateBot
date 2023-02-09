@@ -48,10 +48,14 @@ def parse_callback_data(data):
     from_type = splitted_data[2]
     from_country = splitted_data[3]
     from_bank = splitted_data[4]
+    if from_bank in const.ALL_BANKS_ID_TO_NAME:
+        from_bank = const.ALL_BANKS_ID_TO_NAME[from_bank]
     to_currency = splitted_data[5]
     to_type = splitted_data[6]
     to_country = splitted_data[7]
     to_bank = splitted_data[8]
+    if to_bank in const.ALL_BANKS_ID_TO_NAME:
+        to_bank = const.ALL_BANKS_ID_TO_NAME[to_bank]
     online_only = bool(int(splitted_data[9]))
     broker = bool(int(splitted_data[10]))
     # Backward compatibility

@@ -41,8 +41,10 @@ def inline_convert(from_currency, from_type, from_country, from_bank,
                    to_currency, to_type, to_country, to_bank, online_only, broker, result_num=0):
     online_str = str(int(online_only))
     broker_str = str(int(broker))
-    callback_data_suffix = "#" + from_currency + "#" + from_type + "#" + from_country + "#" + from_bank + \
-                           "#" + to_currency + "#" + to_type + "#" + to_country + "#" + to_bank + \
+    callback_data_suffix = "#" + from_currency + "#" + from_type + "#" + from_country + \
+                           "#" + const.ALL_BANKS_NAME_TO_ID[from_bank] + \
+                           "#" + to_currency + "#" + to_type + "#" + to_country + \
+                           "#" + const.ALL_BANKS_NAME_TO_ID[to_bank] + \
                            "#" + online_str + "#" + broker_str + "#" + str(result_num)
     from_union_type_text = const.CONVERT_CASH["cash"]
     if from_type != "cash":
