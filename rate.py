@@ -80,15 +80,10 @@ def add_rate(rates,
 def get_all_convert(rates,
                     from_currency, from_type, from_country, from_bank,
                     to_currency, to_type, to_country, to_bank,
-                    exclude_methods=None,
-                    exclude_banks=None,
+                    rates_filter=None,
                     all_steps_list=None,
                     all_price_list=None,
                     current_steps=None):
-    if exclude_methods is None:
-        exclude_methods = []
-    if exclude_banks is None:
-        exclude_banks = []
     if current_steps is None:
         current_steps = []
     if all_price_list is None:
@@ -98,18 +93,15 @@ def get_all_convert(rates,
     if len(current_steps) > 7:
         return None, None
 
-    # Copy rates for removing already used steps
-    rates_copy = copy.copy(rates)
+    # Copy rates for filtering rates and removing already used steps
+    # Remove
+    if rates_filter is None:
+        rates_copy = copy.copy(rates)
+    else:
+        rates_copy = list(filter(rates_filter, rates))
     rate_num = 0
     while rate_num < len(rates_copy):
         rate = rates_copy[rate_num]
-
-        # Remove excluded rates and continue
-        if rate["method"] in exclude_methods \
-                or rate["from_bank"] in exclude_banks \
-                or rate["to_bank"] in exclude_banks:
-            rates_copy.pop(rate_num)
-            continue
 
         # If the next step matches
         if rate["from_currency"] == from_currency \
@@ -177,8 +169,7 @@ def get_all_convert(rates,
                 get_all_convert(rates_copy,
                                 rate["to_currency"], rate["to_type"], rate["to_country"], rate["to_bank"],
                                 to_currency, to_type, to_country, to_bank,
-                                exclude_methods=exclude_methods,
-                                exclude_banks=exclude_banks,
+                                rates_filter=None,
                                 all_steps_list=all_steps_list,
                                 all_price_list=all_price_list,
                                 current_steps=new_current_steps)
@@ -197,8 +188,7 @@ def get_best_convert(rates,
                      result_num=0,
                      allow_uncertainty=0,
                      result_format="wide",
-                     exclude_methods=None,
-                     exclude_banks=None,
+                     rates_filter=None,
                      print_=False):
     # debug_start_all = timer()
 
@@ -207,7 +197,7 @@ def get_best_convert(rates,
     all_price_list, all_steps_list = get_all_convert(rates,
                                                      from_currency, from_type, from_country, from_bank,
                                                      to_currency, to_type, to_country, to_bank,
-                                                     exclude_methods=exclude_methods, exclude_banks=exclude_banks)
+                                                     rates_filter=rates_filter)
 
     if len(all_price_list) - 1 < max_result_num:
         max_result_num = len(all_price_list) - 1

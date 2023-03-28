@@ -23,14 +23,16 @@ async def handle_convert(message: types.Message, state: FSMContext):
     to_type = "cash"
     to_country = "am"
     to_bank = ""
+    exclude_methods_local = user.exclude_methods + ["broker"]
+    rates_filter = lambda x: x["method"] not in exclude_methods_local and x["from_bank"] not in user.exclude_banks and \
+                             x["to_bank"] not in user.exclude_banks
     msg, result_num = get_best_convert(bot.common.all_rates,
                            from_currency, from_type, from_country, from_bank,
                            to_currency, to_type, to_country, to_bank,
                            result_num=0,
                            allow_uncertainty=user.uncertainty,
                            result_format=user.message_format,
-                           exclude_methods=user.exclude_methods + ["broker"],
-                           exclude_banks=user.exclude_banks,
+                           rates_filter=rates_filter,
                            print_=False)
     await bot.common.send_message(message.from_user.id, f"<pre>{msg}</pre>",
                                   parse_mode=types.ParseMode.HTML,
@@ -135,6 +137,9 @@ async def get_convert(callback, from_currency, from_type, from_country, from_ban
         extra_exclude_methods += ["atm", "bank"]
     if not broker:
         extra_exclude_methods += ["broker"]
+    exclude_methods_local = user.exclude_methods + extra_exclude_methods
+    rates_filter = lambda x: x["method"] not in exclude_methods_local and x["from_bank"] not in user.exclude_banks and \
+                             x["to_bank"] not in user.exclude_banks
     prev_msg = callback.message.text
     msg, result_num = get_best_convert(bot.common.all_rates,
                            from_currency, from_type, from_country, from_bank,
@@ -142,8 +147,7 @@ async def get_convert(callback, from_currency, from_type, from_country, from_ban
                            result_num=result_num,
                            allow_uncertainty=user.uncertainty,
                            result_format=user.message_format,
-                           exclude_methods=user.exclude_methods + extra_exclude_methods,
-                           exclude_banks=user.exclude_banks,
+                           rates_filter=rates_filter,
                            print_=False)
 
     # log.logger.debug(msg)
@@ -353,10 +357,13 @@ async def handle_convert_all(message: types.Message, state: FSMContext):
                 ["rur", "bank", "ru", "tinkoff", "amd", "cash", "am", "", ["broker"]]]
 
     for conv in converts:
+        exclude_methods_local = user.exclude_methods + conv[8]
+        rates_filter = lambda x: x["method"] not in exclude_methods_local and x["from_bank"] not in user.exclude_banks \
+                                 and x["to_bank"] not in user.exclude_banks
         msg, result_num = get_best_convert(bot.common.all_rates,
                                conv[0], conv[1], conv[2], conv[3], conv[4], conv[5], conv[6], conv[7],
                                allow_uncertainty=user.uncertainty, result_format=user.message_format, print_=False,
-                               exclude_methods=conv[8] + user.exclude_methods, exclude_banks=user.exclude_banks)
+                               rates_filter=rates_filter)
         await bot.common.send_message(message.from_user.id, f"<pre>{msg}</pre>",
                                       parse_mode=types.ParseMode.HTML,
                                       reply_markup=bot_reply_markup.dict_menu(main_command_dict))

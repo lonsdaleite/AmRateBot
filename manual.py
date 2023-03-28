@@ -24,10 +24,13 @@ converts = [["rur", "cash", "am", "",        "eur", "cash", "am", "",         []
             ["rur", "bank", "ru", "tinkoff", "amd", "cash", "am", "",         ["broker"], []]]
 
 for conv in converts:
+    exclude_methods_local = exclude_methods + conv[8]
+    exclude_banks_local = exclude_banks + conv[9]
+    rates_filter = lambda x: x["method"] not in exclude_methods_local and x["from_bank"] not in exclude_banks_local and x["to_bank"] not in exclude_banks_local
     get_best_convert(all_rates, conv[0], conv[1], conv[2], conv[3], conv[4], conv[5], conv[6], conv[7],
                      allow_uncertainty=uncertainty, result_format="wide", print_=True,
-                     exclude_methods=exclude_methods + conv[8],
-                     exclude_banks=exclude_banks + conv[9])
+                     rates_filter=rates_filter,
+                     )
 
 log.logger.debug("Done")
 
