@@ -3,7 +3,7 @@ import log
 from rate_sources.tinkoff_broker import get_currency
 
 
-def add_raiffeisen_broker(url="https://www.tinkoff.ru/invest/currencies/", all_rates=None, fee=0.03):
+def add_raiffeisen_broker(url="https://www.tinkoff.ru/invest/currencies/", all_rates=None, fee=0.019):
     usdrub_rate = get_currency(url + "USDRUB")
     eurrub_rate = get_currency(url + "EURRUB")
     # print(usdrub_rate, eurrub_rate)
