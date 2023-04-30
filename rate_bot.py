@@ -8,7 +8,8 @@ from bot.handlers.base import handle_start, handle_welcome, handle_action_user_a
     handle_help
 from bot.handlers.convert import handle_convert, callback_update_convert, callback_next_convert, callback_prev_convert, \
     callback_update_from_currency, callback_update_to_currency, callback_update_from_union_type, \
-    callback_update_to_union_type, handle_convert_all, callback_update_online_only, callback_update_broker
+    callback_update_to_union_type, handle_convert_all, callback_update_online_only, callback_update_broker, \
+    callback_update_instant
 from bot.handlers.settings import handle_settings, handle_set_message_format, handle_action_set_message_format, \
     settings_dict, callback_update_exclude_banks, \
     callback_update_bank_button, handle_set_banks
@@ -72,6 +73,8 @@ def register_handlers_main():
                                                   regexp=re.compile(r"^c_online.*"), state='*')
     bot.common.dp.register_callback_query_handler(callback_update_broker,
                                                   regexp=re.compile(r"^c_broker.*"), state='*')
+    bot.common.dp.register_callback_query_handler(callback_update_instant,
+                                                  regexp=re.compile(r"^c_instant.*"), state='*')
 
 
 sql_init.run_scripts()
