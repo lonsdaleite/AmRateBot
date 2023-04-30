@@ -14,20 +14,20 @@ def add_const_rates(all_rates=None):
         all_rates = []
 
     add_rate(all_rates, "rur", "bank", "ru", "",           "rur", "bank", "ru", "",         "transfer", 1,     "from")
-    add_rate(all_rates, "rur", "bank", "ru", "",           "rur", "bank", "am", "",         "transfer", 1,     "from")
-    # add_rate(all_rates, "usd", "bank", "ru", "tinkoff",    "usd", "bank", "am", "",         "swift",    1.01,  "from")
-    # add_rate(all_rates, "eur", "bank", "ru", "tinkoff",    "eur", "bank", "am", "",         "swift",    1.01,  "from")
-    add_rate(all_rates, "usd", "bank", "ru", "raif",       "usd", "bank", "am", "",         "swift",    1.02,  "from")
-    add_rate(all_rates, "eur", "bank", "ru", "raif",       "eur", "bank", "am", "",         "swift",    1.02,  "from")
-    add_rate(all_rates, "rur", "bank", "am", "yunibank",   "rur", "cash", "am", "",         "bank",     1.02,  "from")
-    add_rate(all_rates, "usd", "bank", "am", "yunibank",   "usd", "cash", "am", "",         "bank",     1.02,  "from")
-    add_rate(all_rates, "eur", "bank", "am", "yunibank",   "eur", "cash", "am", "",         "bank",     1.02,  "from")
+    add_rate(all_rates, "rur", "bank", "ru", "",           "rur", "bank", "am", "",         "transfer", 1,     "from", instant=False)
+    # add_rate(all_rates, "usd", "bank", "ru", "tinkoff",    "usd", "bank", "am", "",         "swift",    1.01,  "from", instant=False)
+    # add_rate(all_rates, "eur", "bank", "ru", "tinkoff",    "eur", "bank", "am", "",         "swift",    1.01,  "from", instant=False)
+    add_rate(all_rates, "usd", "bank", "ru", "raif",       "usd", "bank", "am", "",         "swift",    1.02,  "from", instant=False)
+    add_rate(all_rates, "eur", "bank", "ru", "raif",       "eur", "bank", "am", "",         "swift",    1.02,  "from", instant=False)
+    add_rate(all_rates, "rur", "bank", "am", "yunibank",   "rur", "cash", "am", "",         "bank",     1.02,  "from", instant=False)
+    add_rate(all_rates, "usd", "bank", "am", "yunibank",   "usd", "cash", "am", "",         "bank",     1.02,  "from", instant=False)
+    add_rate(all_rates, "eur", "bank", "am", "yunibank",   "eur", "cash", "am", "",         "bank",     1.02,  "from", instant=False)
     add_rate(all_rates, "amd", "bank", "am", "",           "amd", "cash", "am", "",         "atm",      1,     "from")
     add_rate(all_rates, "amd", "cash", "am", "",           "amd", "bank", "am", "",         "atm",      1,     "from")
-    add_rate(all_rates, "usd", "cash", "am", "",           "usd", "bank", "am", "yunibank", "bank",     1,     "from")
-    add_rate(all_rates, "eur", "cash", "am", "",           "eur", "bank", "am", "yunibank", "bank",     1,     "from")
-    add_rate(all_rates, "rur", "cash", "am", "",           "rur", "bank", "am", "yunibank", "bank",     1.02,  "from")
-    add_rate(all_rates, "rur", "bank", "am", "yunibank",   "rur", "bank", "ru", "",         "transfer", 1.002, "from")
+    add_rate(all_rates, "usd", "cash", "am", "",           "usd", "bank", "am", "yunibank", "bank",     1,     "from", instant=False)
+    add_rate(all_rates, "eur", "cash", "am", "",           "eur", "bank", "am", "yunibank", "bank",     1,     "from", instant=False)
+    add_rate(all_rates, "rur", "cash", "am", "",           "rur", "bank", "am", "yunibank", "bank",     1.02,  "from", instant=False)
+    add_rate(all_rates, "rur", "bank", "am", "yunibank",   "rur", "bank", "ru", "",         "transfer", 1.002, "from", instant=False)
 
     return all_rates
 

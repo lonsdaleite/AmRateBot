@@ -6,7 +6,7 @@ from format import format_rates
 
 def create_rate(from_currency, from_type, from_country, from_bank,
                 to_currency, to_type, to_country, to_bank,
-                method, value, value_type):
+                method, value, value_type, instant=True):
     if from_type not in ["cash", "bank", ""]:
         log.logger.error("from_type can be only cash or bank")
         return None
@@ -47,6 +47,7 @@ def create_rate(from_currency, from_type, from_country, from_bank,
         "method": method,
         "value_from": value_from,
         "value_to": value_to,
+        "instant": instant,
         "update_ts": datetime.now()
     }
 
@@ -54,14 +55,14 @@ def create_rate(from_currency, from_type, from_country, from_bank,
 def add_rate(rates,
              from_currency, from_type, from_country, from_bank,
              to_currency, to_type, to_country, to_bank,
-             method, value, value_type):
+             method, value, value_type, instant=True):
     if from_bank is None:
         from_bank = ""
     if to_bank is None:
         to_bank = ""
     new_rate = create_rate(from_currency, from_type, from_country, from_bank,
                            to_currency, to_type, to_country, to_bank,
-                           method, value, value_type)
+                           method, value, value_type, instant)
     for num, rate in enumerate(rates):
         if rate["from_currency"] == from_currency \
                 and rate["from_type"] == from_type \
