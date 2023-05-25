@@ -15,6 +15,7 @@ def add_const_rates(all_rates=None):
 
     add_rate(all_rates, "rur", "bank", "ru", "",           "rur", "bank", "ru", "",         "transfer", 1,     "from")
     add_rate(all_rates, "rur", "bank", "ru", "",           "rur", "bank", "am", "",         "transfer", 1,     "from")
+    add_rate(all_rates, "amd", "bank", "am", "",           "amd", "bank", "am", "",         "transfer", 1,     "from")
     # add_rate(all_rates, "usd", "bank", "ru", "tinkoff",    "usd", "bank", "am", "",         "swift",    1.01,  "from")
     # add_rate(all_rates, "eur", "bank", "ru", "tinkoff",    "eur", "bank", "am", "",         "swift",    1.01,  "from")
     add_rate(all_rates, "usd", "bank", "ru", "raif",       "usd", "bank", "am", "",         "swift",    1.02,  "from")
