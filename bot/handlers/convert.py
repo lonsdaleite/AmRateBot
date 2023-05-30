@@ -231,14 +231,18 @@ async def callback_update_to_currency(callback: types.CallbackQuery):
     await callback.answer()
 
 
-def next_union_type(country, type_, bank, online_only, user):
+def next_union_type(country, type_, bank, online_only, user, from_to):
     list_ru_banks_exclude = [x for x in const.LIST_RU_BANKS if x not in user.exclude_banks]
     list_am_banks_exclude = [x for x in const.LIST_AM_BANKS if x not in user.exclude_banks]
 
     new_type = type_
     new_bank = bank
     new_country = country
-    if type_ == "cash":
+    if type_ == "cash" and from_to == "to":
+        new_bank = ""
+        new_type = "pos"
+        new_country = "am"
+    elif type_ == "pos" or type_ == "cash" and from_to == "from":
         new_type = "bank"
         new_bank = list_ru_banks_exclude[0]
         new_country = "ru"
@@ -255,10 +259,14 @@ def next_union_type(country, type_, bank, online_only, user):
         for num, bank_tmp in enumerate(list_am_banks_exclude):
             if bank == bank_tmp:
                 if num == len(list_am_banks_exclude) - 1:
-                    if online_only:
+                    if online_only and from_to == "from":
                         new_type = "bank"
                         new_bank = list_ru_banks_exclude[0]
                         new_country = "ru"
+                    elif online_only and from_to == "to":
+                        new_bank = ""
+                        new_type = "pos"
+                        new_country = "am"
                     else:
                         new_bank = ""
                         new_type = "cash"
@@ -278,7 +286,7 @@ async def callback_update_from_union_type(callback: types.CallbackQuery):
         result_num, instant_num = parse_callback_data(callback.data)
     result_num = -1
 
-    from_country, from_type, from_bank = next_union_type(from_country, from_type, from_bank, online_only, user)
+    from_country, from_type, from_bank = next_union_type(from_country, from_type, from_bank, online_only, user, "from")
 
     msg = callback.message.text
     await update_message(callback.message, msg,
@@ -297,7 +305,7 @@ async def callback_update_to_union_type(callback: types.CallbackQuery):
         result_num, instant_num = parse_callback_data(callback.data)
     result_num = -1
 
-    to_country, to_type, to_bank = next_union_type(to_country, to_type, to_bank, online_only, user)
+    to_country, to_type, to_bank = next_union_type(to_country, to_type, to_bank, online_only, user, "to")
 
     msg = callback.message.text
     await update_message(callback.message, msg,
@@ -321,9 +329,9 @@ async def callback_update_online_only(callback: types.CallbackQuery):
     else:
         online_only = True
         if from_type == "cash":
-            from_country, from_type, from_bank = next_union_type(from_country, from_type, from_bank, online_only, user)
+            from_country, from_type, from_bank = next_union_type(from_country, from_type, from_bank, online_only, user, "from")
         if to_type == "cash":
-            to_country, to_type, to_bank = next_union_type(to_country, to_type, to_bank, online_only, user)
+            to_country, to_type, to_bank = next_union_type(to_country, to_type, to_bank, online_only, user, "to")
 
     msg = callback.message.text
     await update_message(callback.message, msg,

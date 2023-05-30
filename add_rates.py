@@ -5,6 +5,7 @@ from rate_sources.rate_am import add_rate_am
 from rate_sources.sas import add_sas
 from rate_sources.mir import add_mir
 from rate_sources.tinkoff_broker import add_tinkoff_broker
+from rate_sources.tinkoff_card import add_tinkoff_card
 from rate_sources.unistream import add_unistream
 import log
 
@@ -13,6 +14,8 @@ def add_const_rates(all_rates=None):
     if all_rates is None:
         all_rates = []
 
+    add_rate(all_rates, "amd", "bank", "am", "",           "amd", "pos",  "am", "",         "pos",      1,     "from")
+    add_rate(all_rates, "amd", "bank", "ru", "tinkoff",    "amd", "pos",  "am", "",         "pos",      1,     "from")
     add_rate(all_rates, "rur", "bank", "ru", "",           "rur", "bank", "ru", "",         "transfer", 1,     "from")
     add_rate(all_rates, "rur", "bank", "ru", "",           "rur", "bank", "am", "",         "transfer", 1,     "from", instant=False)
     add_rate(all_rates, "amd", "bank", "am", "",           "amd", "bank", "am", "",         "transfer", 1,     "from", instant=False)
@@ -41,6 +44,7 @@ def add_all_rates(all_rates=None):
     add_sas(all_rates=all_rates)
     add_mir(all_rates=all_rates)
     add_tinkoff_broker(all_rates=all_rates)
+    add_tinkoff_card(all_rates=all_rates)
     add_raiffeisen_broker(all_rates=all_rates)
     add_unistream(all_rates=all_rates)
     add_rate_am(convert_type="cash", all_rates=all_rates)

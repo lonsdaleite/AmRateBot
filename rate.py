@@ -10,8 +10,8 @@ def create_rate(from_currency, from_type, from_country, from_bank,
     if from_type not in ["cash", "bank", ""]:
         log.logger.error("from_type can be only cash or bank")
         return None
-    if to_type not in ["cash", "bank"]:
-        log.logger.error("to_type can be only cash or bank")
+    if to_type not in ["cash", "bank", "pos"]:
+        log.logger.error("to_type can be only cash, bank or pos")
         return None
     if from_country not in ["ru", "am"]:
         log.logger.error("from_country can be only ru or am")

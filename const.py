@@ -9,6 +9,7 @@ ALL_CURRENCIES = OrderedDict({
 LIST_CURRENCIES = list(ALL_CURRENCIES.keys())
 
 CONVERT_CASH = OrderedDict({"cash": "Наличные"})
+CONVERT_POS = OrderedDict({"pos": "Оплата"})
 
 # Add new banks to the end only! You can ignore "" bank
 CONVERT_RU_BANKS = OrderedDict({
@@ -91,7 +92,8 @@ ALL_METHODS = OrderedDict({
     "swift": "Swift",
     "total": "Итого",
     "transfer": "Перевод",
-    "unistream": "Unistream"
+    "unistream": "Unistream",
+    "pos": "Оплата"
 })
 
 DEFAULT_EXCLUDE_METHODS = []

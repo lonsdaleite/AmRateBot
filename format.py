@@ -42,6 +42,8 @@ def format_rates(rates, result_format="wide", print_=False):
             format_from_type = format_from_bank
         if rate["to_type"] == "cash":
             format_to_type = "Cash"
+        elif rate["to_type"] == "pos":
+            format_to_type = "POS"
         else:
             format_to_type = format_to_bank
 

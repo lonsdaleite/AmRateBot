@@ -53,8 +53,11 @@ def inline_convert(from_currency, from_type, from_country, from_bank,
         else:
             from_union_type_text = const.CONVERT_RU_BANKS[from_bank]
 
-    to_union_type_text = const.CONVERT_CASH["cash"]
-    if to_type != "cash":
+    if to_type == "cash":
+        to_union_type_text = const.CONVERT_CASH["cash"]
+    elif to_type == "pos":
+        to_union_type_text = const.CONVERT_POS["pos"]
+    else:
         if to_country == "am":
             to_union_type_text = const.CONVERT_AM_BANKS[to_bank]
         else:
