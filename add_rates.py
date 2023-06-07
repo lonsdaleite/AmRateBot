@@ -9,6 +9,7 @@ from rate_sources.tinkoff_card import add_tinkoff_card
 from rate_sources.unionpay import add_unionpay
 from rate_sources.unistream import add_unistream
 import log
+from rate_sources.visa import add_visa
 
 
 def add_const_rates(all_rates=None):
@@ -52,6 +53,8 @@ def add_all_rates(all_rates=None):
     add_rate_am(convert_type="non-cash", all_rates=all_rates)
     add_id_pay(all_rates)
     add_unionpay(all_rates=all_rates)
+    add_visa(fee=0.5, bank="ardshinbank", bank_cash_fee=0.015, all_rates=all_rates)
+    add_visa(fee=2, bank="yunibank", bank_cash_fee=0.013, all_rates=all_rates)
 
     add_const_rates(all_rates=all_rates)
 
