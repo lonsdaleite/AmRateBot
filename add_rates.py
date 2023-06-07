@@ -53,8 +53,10 @@ def add_all_rates(all_rates=None):
     add_rate_am(convert_type="non-cash", all_rates=all_rates)
     add_id_pay(all_rates)
     add_unionpay(all_rates=all_rates)
-    add_visa(fee=0.5, bank="ardshinbank", bank_cash_fee=0.015, all_rates=all_rates)
-    add_visa(fee=2, bank="yunibank", bank_cash_fee=0.013, all_rates=all_rates)
+    add_visa(fee=0.5, bank="ardshinbank", from_curr="AMD", to_curr="RSD", bank_cash_fee=0.015, all_rates=all_rates)
+    add_visa(fee=0.5, bank="ardshinbank", from_curr="EUR", to_curr="RSD", bank_cash_fee=0.015, all_rates=all_rates)
+    add_visa(fee=2, bank="yunibank", from_curr="AMD", to_curr="RSD", bank_cash_fee=0.013, all_rates=all_rates)
+    add_visa(fee=2, bank="yunibank", from_curr="EUR", to_curr="RSD", bank_cash_fee=None, all_rates=all_rates)
 
     add_const_rates(all_rates=all_rates)
 
