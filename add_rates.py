@@ -6,6 +6,7 @@ from rate_sources.sas import add_sas
 from rate_sources.mir import add_mir
 from rate_sources.tinkoff_broker import add_tinkoff_broker
 from rate_sources.tinkoff_card import add_tinkoff_card
+from rate_sources.unionpay import add_unionpay
 from rate_sources.unistream import add_unistream
 import log
 
@@ -50,6 +51,7 @@ def add_all_rates(all_rates=None):
     add_rate_am(convert_type="cash", all_rates=all_rates)
     add_rate_am(convert_type="non-cash", all_rates=all_rates)
     add_id_pay(all_rates)
+    add_unionpay(all_rates=all_rates)
 
     add_const_rates(all_rates=all_rates)
 

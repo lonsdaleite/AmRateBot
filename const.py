@@ -4,7 +4,8 @@ ALL_CURRENCIES = OrderedDict({
     "rur": "₽",
     "usd": "$",
     "eur": "€",
-    "amd": "֏"
+    "amd": "֏",
+    "rsd": "RSD"
 })
 LIST_CURRENCIES = list(ALL_CURRENCIES.keys())
 
