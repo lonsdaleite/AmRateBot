@@ -32,7 +32,7 @@ def format_rates(rates, result_format="wide", print_=False):
             format_method = ALL_BANKS[rate["method"]]
         if rate["value_from"] == "-" or rate["value_to"] == "-":
             format_value = "-"
-        elif rate["value_from"] >= rate["value_to"]:
+        elif rate["value_from"] >= rate["value_to"] or rate["from_currency"] == "rur" and rate["to_currency"] == "rsd":
             format_value = str(f'{rate["value_from"]:.2f}') + " " + format_from_currency
         else:
             format_value = str(f'{rate["value_to"]:.2f}') + " " + format_to_currency
