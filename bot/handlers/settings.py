@@ -53,11 +53,11 @@ async def handle_action_set_message_format(message: types.Message, state: FSMCon
 
 def parse_banks_callback_suffix(callback_data):
     data_toggle = callback_data.split("#")
-    exclude_banks = []
+    include_banks = []
     for num in range(1, len(data_toggle)):
-        if data_toggle[num] == "0":
-            exclude_banks.append(const.LIST_ALL_BANKS[num])
-    return exclude_banks
+        if data_toggle[num] == "1":
+            include_banks.append(const.LIST_ALL_BANKS[num])
+    return include_banks
 
 
 async def handle_set_banks(message: types.Message, state: FSMContext):
@@ -66,7 +66,7 @@ async def handle_set_banks(message: types.Message, state: FSMContext):
         return
 
     msg = "Выбери банки, карты которых у тебя есть"
-    await bot.common.send_message(user.tg_id, msg, reply_markup=bot_reply_markup.inline_banks(user.exclude_banks))
+    await bot.common.send_message(user.tg_id, msg, reply_markup=bot_reply_markup.inline_banks(user.include_banks))
 
 
 async def callback_update_bank_button(callback: types.CallbackQuery):
@@ -74,26 +74,26 @@ async def callback_update_bank_button(callback: types.CallbackQuery):
     if user is None:
         return
 
-    exclude_banks = parse_banks_callback_suffix(callback.data)
+    include_banks = parse_banks_callback_suffix(callback.data)
     bank = callback.data.split("#")[0].split("_")[1]
-    if bank in exclude_banks:
-        exclude_banks.remove(bank)
+    if bank in include_banks:
+        include_banks.remove(bank)
     else:
-        exclude_banks.append(bank)
+        include_banks.append(bank)
 
     await callback.message.edit_text(
         callback.message.text,
-        reply_markup=bot_reply_markup.inline_banks(exclude_banks))
+        reply_markup=bot_reply_markup.inline_banks(include_banks))
     await callback.answer()
 
 
-async def callback_update_exclude_banks(callback: types.CallbackQuery):
+async def callback_update_include_banks(callback: types.CallbackQuery):
     user = await validate(callback=callback)
     if user is None:
         return
 
-    exclude_banks = parse_banks_callback_suffix(callback.data)
-    user.update_user_info(exclude_banks=exclude_banks)
+    include_banks = parse_banks_callback_suffix(callback.data)
+    user.update_user_info(include_banks=include_banks)
     await callback.message.edit_text(
         "Информация о банках обновлена",
         reply_markup=None)

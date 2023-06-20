@@ -7,7 +7,7 @@ class User:
         self.user_id = None
         self.tg_id = None
         self.message_format = None
-        self.exclude_banks = None
+        self.include_banks = None
 
         self.refresh_args(user_id, tg_id)
 
@@ -21,21 +21,21 @@ class User:
         user_info = select_actions.get_user_info(user_id, tg_id)
 
         if user_info is not None:
-            tmp_exclude_banks = user_info["exclude_banks"]
-            if tmp_exclude_banks is None or tmp_exclude_banks == "":
-                tmp_exclude_banks = []
+            tmp_include_banks = user_info["include_banks"]
+            if tmp_include_banks is None or tmp_include_banks == "":
+                tmp_include_banks = []
             else:
-                tmp_exclude_banks = tmp_exclude_banks.split(",")
+                tmp_include_banks = tmp_include_banks.split(",")
 
             self.user_id = user_info["user_id"]
             self.tg_id = user_info["tg_id"]
             self.message_format = user_info["message_format"]
-            self.exclude_banks = tmp_exclude_banks
+            self.include_banks = tmp_include_banks
 
     def refresh(self):
         self.refresh_args(self.user_id, self.tg_id)
 
-    def update_user_info(self, tg_id=None, message_format=None, exclude_banks=None):
+    def update_user_info(self, tg_id=None, message_format=None, include_banks=None):
         dml_actions.update_user_info(self.user_id, tg_id=tg_id, message_format=message_format,
-                                     exclude_banks=exclude_banks)
+                                     include_banks=include_banks)
         self.refresh()

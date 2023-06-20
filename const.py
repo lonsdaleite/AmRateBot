@@ -66,21 +66,41 @@ for bank_name in LIST_AM_BANKS:
     AM_BANKS_ID_TO_NAME[bank_id] = bank_name
     AM_BANKS_NAME_TO_ID[bank_name] = bank_id
 
+# Add new banks to the end only! You can ignore "" bank
+CONVERT_RS_BANKS = OrderedDict({
+    "alta": "Alta",
+    # "raif-rs": "Raiffeisen SRB",
+    "": "Банк РС"
+})
+LIST_RS_BANKS = list(CONVERT_RS_BANKS.keys())
+
+RS_BANKS_ID_TO_NAME = {}
+RS_BANKS_NAME_TO_ID = {}
+num = 0
+for bank_name in LIST_RS_BANKS:
+    if bank_name == "":
+        continue
+    num += 1
+    bank_id = "S" + str(num)
+    RS_BANKS_ID_TO_NAME[bank_id] = bank_name
+    RS_BANKS_NAME_TO_ID[bank_name] = bank_id
+
 ALL_BANKS = OrderedDict()
 ALL_BANKS[""] = "Банк"
 ALL_BANKS.update(CONVERT_AM_BANKS)
 ALL_BANKS.update(CONVERT_RU_BANKS)
+ALL_BANKS.update(CONVERT_RS_BANKS)
 LIST_ALL_BANKS = list(ALL_BANKS.keys())
 
 ALL_BANKS_ID_TO_NAME = {"0": ""}
 ALL_BANKS_ID_TO_NAME.update(RU_BANKS_ID_TO_NAME)
 ALL_BANKS_ID_TO_NAME.update(AM_BANKS_ID_TO_NAME)
+ALL_BANKS_ID_TO_NAME.update(RS_BANKS_ID_TO_NAME)
 
 ALL_BANKS_NAME_TO_ID = {"": "0"}
 ALL_BANKS_NAME_TO_ID.update(RU_BANKS_NAME_TO_ID)
 ALL_BANKS_NAME_TO_ID.update(AM_BANKS_NAME_TO_ID)
-
-DEFAULT_EXCLUDE_BANKS = [x for x in ALL_BANKS if x != ""]
+ALL_BANKS_NAME_TO_ID.update(RS_BANKS_NAME_TO_ID)
 
 ALL_METHODS = OrderedDict({
     "": "",

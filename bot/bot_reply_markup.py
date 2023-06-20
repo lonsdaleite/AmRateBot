@@ -106,26 +106,32 @@ def inline_convert(from_currency, from_type, from_country, from_bank,
     return markup
 
 
-def create_banks_callback_suffix(exclude_banks):
+def create_banks_callback_suffix(include_banks):
     suffix = ""
     for num in range(1, len(const.LIST_ALL_BANKS)):
-        if const.LIST_ALL_BANKS[num] in exclude_banks:
+        if const.LIST_ALL_BANKS[num] not in include_banks:
             suffix += "#0"
         else:
             suffix += "#1"
     return suffix
 
 
-def inline_banks(exclude_banks):
-    callback_data_suffix = create_banks_callback_suffix(exclude_banks)
+def inline_banks(include_banks):
+    callback_data_suffix = create_banks_callback_suffix(include_banks)
     buttons = []
     for num in range(1, len(const.LIST_ALL_BANKS)):
         bank_key = const.LIST_ALL_BANKS[num]
         bank = const.ALL_BANKS[bank_key]
-        if bank_key in exclude_banks:
+        if bank_key not in include_banks:
             bank += " ❌"
         else:
             bank += " ✅"
+        if bank_key in const.LIST_RU_BANKS:
+            bank = "Россия: " + bank
+        elif bank_key in const.LIST_AM_BANKS:
+            bank = "Армения: " + bank
+        elif bank_key in const.LIST_RS_BANKS:
+            bank = "Сербия: " + bank
         buttons.append([types.InlineKeyboardButton(text=bank,
                                                    callback_data="bb_" + bank_key + callback_data_suffix)])
     buttons.append([types.InlineKeyboardButton(text="Обновить информацию",

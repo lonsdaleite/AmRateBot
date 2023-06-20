@@ -5,12 +5,12 @@ import log
 from bot.db import sql_connect
 
 
-def update_user_info(user_id, tg_id=None, message_format=None, exclude_banks=None):
+def update_user_info(user_id, tg_id=None, message_format=None, include_banks=None):
     if user_id is None:
         log.logger.error("Can not add a user info without user_id")
         return
 
-    if tg_id is None and message_format is None and exclude_banks is None:
+    if tg_id is None and message_format is None and include_banks is None:
         log.logger.error("Can't update user_id: " + str(user_id) + " info. No arguments passed.")
         return
 
@@ -43,16 +43,16 @@ def update_user_info(user_id, tg_id=None, message_format=None, exclude_banks=Non
             WHERE user_id = ? and deleted_flg = '0'
             """, (message_format, user_id))
 
-    if exclude_banks is not None:
-        if len(exclude_banks) == 0:
-            exclude_banks_str = None
+    if include_banks is not None:
+        if len(include_banks) == 0:
+            include_banks_str = None
         else:
-            exclude_banks_str = ",".join(exclude_banks)
+            include_banks_str = ",".join(include_banks)
         cursor.execute("""
             UPDATE user
-            SET exclude_banks = ?
+            SET include_banks = ?
             WHERE user_id = ? and deleted_flg = '0'
-            """, (exclude_banks_str, user_id))
+            """, (include_banks_str, user_id))
 
     log.logger.info("user_id: " + str(user_id) + " tg_id: " + str(tg_id) + " info updated")
 
@@ -107,10 +107,10 @@ def add_user(tg_id=None):
 
         cursor.execute("""
             INSERT INTO user (
-               user_id, tg_id, message_format, exclude_banks, deleted_flg, processed_dttm) 
+               user_id, tg_id, message_format, include_banks, deleted_flg, processed_dttm) 
             VALUES (?, ?, ?, ?, ?, ?)
             """, (user_id, tg_id, 'short',
-                  ",".join(const.DEFAULT_EXCLUDE_BANKS), '0', datetime.now()))
+                  "", '0', datetime.now()))
 
         log.logger.info("user_id: " + str(user_id) + " tg_id: " + str(tg_id) + " added")
     elif row['deleted_flg'] == '0':

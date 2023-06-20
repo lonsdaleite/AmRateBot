@@ -27,8 +27,9 @@ async def handle_convert(message: types.Message, state: FSMContext):
     to_bank = ""
     instant_num = 0
     exclude_methods_local = ["broker"]
-    rates_filter = lambda x: x["method"] not in exclude_methods_local and x["from_bank"] not in user.exclude_banks and \
-                             x["to_bank"] not in user.exclude_banks
+    rates_filter = lambda x: x["method"] not in exclude_methods_local \
+                             and x["from_bank"] in ([""] + user.include_banks) \
+                             and x["to_bank"] in ([""] + user.include_banks)
     msg, result_num = get_best_convert(bot.common.all_rates,
                            from_currency, from_type, from_country, from_bank,
                            to_currency, to_type, to_country, to_bank,
@@ -152,8 +153,10 @@ async def get_convert(callback, from_currency, from_type, from_country, from_ban
 
     instant = bool(instant_num)
 
-    rates_filter = lambda x: x["method"] not in exclude_methods_local and x["from_bank"] not in user.exclude_banks and \
-                             x["to_bank"] not in user.exclude_banks and (not instant or x["instant"])
+    rates_filter = lambda x: x["method"] not in exclude_methods_local \
+                             and x["from_bank"] in ([""] + user.include_banks) \
+                             and x["to_bank"] in ([""] + user.include_banks) \
+                             and (not instant or x["instant"])
     prev_msg = callback.message.text
     msg, result_num = get_best_convert(bot.common.all_rates,
                            from_currency, from_type, from_country, from_bank,
@@ -230,8 +233,8 @@ async def callback_update_to_currency(callback: types.CallbackQuery):
 
 
 def next_union_type(country, type_, bank, online_only, user, from_to):
-    list_ru_banks_exclude = [x for x in const.LIST_RU_BANKS if x not in user.exclude_banks]
-    list_am_banks_exclude = [x for x in const.LIST_AM_BANKS if x not in user.exclude_banks]
+    list_ru_banks_exclude = [x for x in const.LIST_RU_BANKS if x in ([""] + user.include_banks)]
+    list_am_banks_exclude = [x for x in const.LIST_AM_BANKS if x in ([""] + user.include_banks)]
 
     new_type = type_
     new_bank = bank
@@ -400,8 +403,9 @@ async def handle_convert_all(message: types.Message, state: FSMContext):
 
     for conv in converts:
         exclude_methods_local = conv[8]
-        rates_filter = lambda x: x["method"] not in exclude_methods_local and x["from_bank"] not in user.exclude_banks \
-                                 and x["to_bank"] not in user.exclude_banks
+        rates_filter = lambda x: x["method"] not in exclude_methods_local \
+                                 and x["from_bank"] in ([""] + user.include_banks) \
+                                 and x["to_bank"] in ([""] + user.include_banks)
         msg, result_num = get_best_convert(bot.common.all_rates,
                                conv[0], conv[1], conv[2], conv[3], conv[4], conv[5], conv[6], conv[7],
                                result_format=user.message_format, print_=False,
