@@ -26,7 +26,7 @@ async def handle_convert(message: types.Message, state: FSMContext):
     to_country = "am"
     to_bank = ""
     instant_num = 0
-    exclude_methods_local = user.exclude_methods + ["broker"]
+    exclude_methods_local = ["broker"]
     rates_filter = lambda x: x["method"] not in exclude_methods_local and x["from_bank"] not in user.exclude_banks and \
                              x["to_bank"] not in user.exclude_banks
     msg, result_num = get_best_convert(bot.common.all_rates,
@@ -148,7 +148,7 @@ async def get_convert(callback, from_currency, from_type, from_country, from_ban
         extra_exclude_methods += ["atm", "bank"]
     if not broker:
         extra_exclude_methods += ["broker"]
-    exclude_methods_local = user.exclude_methods + extra_exclude_methods
+    exclude_methods_local = extra_exclude_methods
 
     instant = bool(instant_num)
 
@@ -399,7 +399,7 @@ async def handle_convert_all(message: types.Message, state: FSMContext):
                 ["rur", "bank", "ru", "tinkoff", "amd", "cash", "am", "", ["broker"]]]
 
     for conv in converts:
-        exclude_methods_local = user.exclude_methods + conv[8]
+        exclude_methods_local = conv[8]
         rates_filter = lambda x: x["method"] not in exclude_methods_local and x["from_bank"] not in user.exclude_banks \
                                  and x["to_bank"] not in user.exclude_banks
         msg, result_num = get_best_convert(bot.common.all_rates,

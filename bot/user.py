@@ -8,7 +8,6 @@ class User:
         self.tg_id = None
         self.message_format = None
         self.exclude_banks = None
-        self.exclude_methods = None
 
         self.refresh_args(user_id, tg_id)
 
@@ -28,22 +27,15 @@ class User:
             else:
                 tmp_exclude_banks = tmp_exclude_banks.split(",")
 
-            tmp_exclude_methods = user_info["exclude_methods"]
-            if tmp_exclude_methods is None or tmp_exclude_methods == "":
-                tmp_exclude_methods = []
-            else:
-                tmp_exclude_methods = tmp_exclude_methods.split(",")
-
             self.user_id = user_info["user_id"]
             self.tg_id = user_info["tg_id"]
             self.message_format = user_info["message_format"]
             self.exclude_banks = tmp_exclude_banks
-            self.exclude_methods = tmp_exclude_methods
 
     def refresh(self):
         self.refresh_args(self.user_id, self.tg_id)
 
-    def update_user_info(self, tg_id=None, message_format=None, exclude_banks=None, exclude_methods=None):
+    def update_user_info(self, tg_id=None, message_format=None, exclude_banks=None):
         dml_actions.update_user_info(self.user_id, tg_id=tg_id, message_format=message_format,
-                                     exclude_banks=exclude_banks, exclude_methods=exclude_methods)
+                                     exclude_banks=exclude_banks)
         self.refresh()

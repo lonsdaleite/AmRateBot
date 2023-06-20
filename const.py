@@ -96,5 +96,3 @@ ALL_METHODS = OrderedDict({
     "unistream": "Unistream",
     "pos": "Оплата"
 })
-
-DEFAULT_EXCLUDE_METHODS = []

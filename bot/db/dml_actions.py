@@ -5,12 +5,12 @@ import log
 from bot.db import sql_connect
 
 
-def update_user_info(user_id, tg_id=None, message_format=None, exclude_banks=None, exclude_methods=None):
+def update_user_info(user_id, tg_id=None, message_format=None, exclude_banks=None):
     if user_id is None:
         log.logger.error("Can not add a user info without user_id")
         return
 
-    if tg_id is None and message_format is None and exclude_banks is None and exclude_methods is None:
+    if tg_id is None and message_format is None and exclude_banks is None:
         log.logger.error("Can't update user_id: " + str(user_id) + " info. No arguments passed.")
         return
 
@@ -53,17 +53,6 @@ def update_user_info(user_id, tg_id=None, message_format=None, exclude_banks=Non
             SET exclude_banks = ?
             WHERE user_id = ? and deleted_flg = '0'
             """, (exclude_banks_str, user_id))
-
-    if exclude_methods is not None:
-        if len(exclude_methods) == 0:
-            exclude_methods_str = None
-        else:
-            exclude_methods_str = ",".join(exclude_methods)
-        cursor.execute("""
-            UPDATE user
-            SET exclude_methods = ?
-            WHERE user_id = ? and deleted_flg = '0'
-            """, (exclude_methods_str, user_id))
 
     log.logger.info("user_id: " + str(user_id) + " tg_id: " + str(tg_id) + " info updated")
 
@@ -118,10 +107,10 @@ def add_user(tg_id=None):
 
         cursor.execute("""
             INSERT INTO user (
-               user_id, tg_id, message_format, exclude_banks, exclude_methods, deleted_flg, processed_dttm) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+               user_id, tg_id, message_format, exclude_banks, deleted_flg, processed_dttm) 
+            VALUES (?, ?, ?, ?, ?, ?)
             """, (user_id, tg_id, 'short',
-                  ",".join(const.DEFAULT_EXCLUDE_BANKS), ",".join(const.DEFAULT_EXCLUDE_METHODS), '0', datetime.now()))
+                  ",".join(const.DEFAULT_EXCLUDE_BANKS), '0', datetime.now()))
 
         log.logger.info("user_id: " + str(user_id) + " tg_id: " + str(tg_id) + " added")
     elif row['deleted_flg'] == '0':
