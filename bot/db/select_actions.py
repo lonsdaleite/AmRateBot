@@ -11,7 +11,7 @@ def get_user_info(user_id, tg_id):
         return
 
     cursor.execute("""
-        SELECT user_id, tg_id, message_format, exclude_banks, exclude_methods, uncertainty
+        SELECT user_id, tg_id, message_format, exclude_banks, exclude_methods
         FROM user 
         WHERE (user_id = ? or tg_id = ?) and deleted_flg = '0'
         """, (user_id, tg_id))

@@ -33,7 +33,6 @@ async def handle_convert(message: types.Message, state: FSMContext):
                            from_currency, from_type, from_country, from_bank,
                            to_currency, to_type, to_country, to_bank,
                            result_num=0,
-                           allow_uncertainty=user.uncertainty,
                            result_format=user.message_format,
                            rates_filter=rates_filter,
                            print_=False)
@@ -160,7 +159,6 @@ async def get_convert(callback, from_currency, from_type, from_country, from_ban
                            from_currency, from_type, from_country, from_bank,
                            to_currency, to_type, to_country, to_bank,
                            result_num=result_num,
-                           allow_uncertainty=user.uncertainty,
                            result_format=user.message_format,
                            rates_filter=rates_filter,
                            print_=False)
@@ -406,7 +404,7 @@ async def handle_convert_all(message: types.Message, state: FSMContext):
                                  and x["to_bank"] not in user.exclude_banks
         msg, result_num = get_best_convert(bot.common.all_rates,
                                conv[0], conv[1], conv[2], conv[3], conv[4], conv[5], conv[6], conv[7],
-                               allow_uncertainty=user.uncertainty, result_format=user.message_format, print_=False,
+                               result_format=user.message_format, print_=False,
                                rates_filter=rates_filter)
         await bot.common.send_message(message.from_user.id, f"<pre>{msg}</pre>",
                                       parse_mode=types.ParseMode.HTML,

@@ -187,7 +187,6 @@ def get_best_convert(rates,
                      from_currency, from_type, from_country, from_bank,
                      to_currency, to_type, to_country, to_bank,
                      result_num=0,
-                     allow_uncertainty=0,
                      result_format="wide",
                      rates_filter=None,
                      print_=False):
@@ -221,18 +220,6 @@ def get_best_convert(rates,
     if best_result_num != -1:
         best_price = all_price_list[best_result_num]
         best_steps = all_steps_list[best_result_num]
-
-    # Find shorter steps with almost the same price
-    # if allow_uncertainty >= 0:
-    #     second_best_price = best_price
-    #     second_best_steps = best_steps
-    #     for num, price in enumerate(all_price_list):
-    #         if price <= best_price * (1 + allow_uncertainty) \
-    #                 and len(all_steps_list[num]) < len(second_best_steps):
-    #             second_best_price = price
-    #             second_best_steps = all_steps_list[num]
-    #     best_price = second_best_price
-    #     best_steps = second_best_steps
 
     # Format output
     result = ""
