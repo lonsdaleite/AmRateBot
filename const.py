@@ -15,7 +15,7 @@ CONVERT_POS = OrderedDict({"pos": "Оплата"})
 # Add new banks to the end only! You can ignore "" bank
 CONVERT_RU_BANKS = OrderedDict({
     "tinkoff": "Tinkoff",
-    "raif": "Raiffeisen",
+    "raif": "Raiffeisen RU",
     "": "Банк РФ"
 })
 LIST_RU_BANKS = list(CONVERT_RU_BANKS.keys())
