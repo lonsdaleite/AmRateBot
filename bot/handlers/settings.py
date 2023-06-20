@@ -56,7 +56,7 @@ def parse_banks_callback_suffix(callback_data):
     include_banks = []
     for num in range(1, len(data_toggle)):
         if data_toggle[num] == "1":
-            include_banks.append(const.LIST_ALL_BANKS[num])
+            include_banks.append(const.SETTINGS_ALL_BANKS[num])
     return include_banks
 
 

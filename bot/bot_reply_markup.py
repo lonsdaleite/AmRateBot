@@ -108,8 +108,8 @@ def inline_convert(from_currency, from_type, from_country, from_bank,
 
 def create_banks_callback_suffix(include_banks):
     suffix = ""
-    for num in range(1, len(const.LIST_ALL_BANKS)):
-        if const.LIST_ALL_BANKS[num] not in include_banks:
+    for num in range(1, len(const.SETTINGS_ALL_BANKS)):
+        if const.SETTINGS_ALL_BANKS[num] not in include_banks:
             suffix += "#0"
         else:
             suffix += "#1"
@@ -119,8 +119,8 @@ def create_banks_callback_suffix(include_banks):
 def inline_banks(include_banks):
     callback_data_suffix = create_banks_callback_suffix(include_banks)
     buttons = []
-    for num in range(1, len(const.LIST_ALL_BANKS)):
-        bank_key = const.LIST_ALL_BANKS[num]
+    for num in range(1, len(const.SETTINGS_ALL_BANKS)):
+        bank_key = const.SETTINGS_ALL_BANKS[num]
         bank = const.ALL_BANKS[bank_key]
         if bank_key not in include_banks:
             bank += " ❌"

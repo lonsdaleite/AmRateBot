@@ -69,7 +69,7 @@ for bank_name in LIST_AM_BANKS:
 # Add new banks to the end only! You can ignore "" bank
 CONVERT_RS_BANKS = OrderedDict({
     "alta": "Alta",
-    # "raif-rs": "Raiffeisen SRB",
+    "raif-rs": "Raiffeisen SRB",
     "": "Банк РС"
 })
 LIST_RS_BANKS = list(CONVERT_RS_BANKS.keys())
@@ -91,6 +91,9 @@ ALL_BANKS.update(CONVERT_AM_BANKS)
 ALL_BANKS.update(CONVERT_RU_BANKS)
 ALL_BANKS.update(CONVERT_RS_BANKS)
 LIST_ALL_BANKS = list(ALL_BANKS.keys())
+
+EXCLUDE_BANKS_LIST = ["biblos-bank-armenia", "eychesbisi-bank", "fast-bank", "haybiznesbank", "hayekonombank", "mellat-bank"]
+SETTINGS_ALL_BANKS = [x for x in LIST_ALL_BANKS if x not in EXCLUDE_BANKS_LIST]
 
 ALL_BANKS_ID_TO_NAME = {"0": ""}
 ALL_BANKS_ID_TO_NAME.update(RU_BANKS_ID_TO_NAME)

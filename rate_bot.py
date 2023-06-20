@@ -42,11 +42,6 @@ def register_handlers_main():
     bot.common.dp.register_callback_query_handler(callback_update_include_banks, regexp=re.compile(r"^ub_.*"),
                                                   state=[user_state.InitialState.waiting_for_settings])
 
-    # bot.common.dp.register_callback_query_handler(callback_update_broker_button, regexp=re.compile(r"^button_broker.*"),
-    #                                               state=[user_state.InitialState.waiting_for_settings])
-    # bot.common.dp.register_callback_query_handler(callback_update_exclude_broker, regexp=re.compile(r"^upd_broker.*"),
-    #                                               state=[user_state.InitialState.waiting_for_settings])
-
     bot.common.dp.register_callback_query_handler(callback_update_convert, regexp=re.compile(r"^c_update.*"), state='*')
     bot.common.dp.register_callback_query_handler(callback_next_convert, regexp=re.compile(r"^c_next.*"), state='*')
     bot.common.dp.register_callback_query_handler(callback_prev_convert, regexp=re.compile(r"^c_prev.*"), state='*')
