@@ -343,6 +343,11 @@ async def callback_update_location(callback: types.CallbackQuery):
             to_country, to_type, to_bank = next_union_type(to_country, to_type, to_bank, location, user, "to")
         if to_type == "pos":
             to_country, to_type, to_bank = next_union_type(to_country, to_type, to_bank, location, user, "to")
+    else:
+        if from_type == "cash":
+            from_country = location
+        if to_type in ("cash", "pos"):
+            to_country = location
 
     msg = callback.message.text
     await update_message(callback.message, msg,
