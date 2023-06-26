@@ -45,10 +45,9 @@ def add_unionpay(url="https://www.unionpayintl.com/upload/jfimg/", trans_cur="RS
 
         for rate in full_rate_json["exchangeRateJson"]:
             if rate["transCur"] == trans_cur and rate["baseCur"] == base_cur:
-                # Country am is a workaround
-                add_rate(all_rates, "usd", "bank", "ru", "tinkoff", "rsd", "pos", "am", "", "pos",
+                add_rate(all_rates, "usd", "bank", "ru", "tinkoff", "rsd", "pos", "rs", "", "pos",
                          float(rate["rateData"]), "from")
-                add_rate(all_rates, "usd", "bank", "ru", "tinkoff", "rsd", "cash", "am", "", "atm",
+                add_rate(all_rates, "usd", "bank", "ru", "tinkoff", "rsd", "cash", "rs", "", "atm",
                          float(rate["rateData"]), "from")
                 break
     else:

@@ -38,18 +38,20 @@ def user_accept():
 
 
 def inline_convert(from_currency, from_type, from_country, from_bank,
-                   to_currency, to_type, to_country, to_bank, online_only, broker, result_num=0, instant_num=0):
-    online_str = str(int(online_only))
+                   to_currency, to_type, to_country, to_bank, location, broker, result_num=0, instant_num=0):
     broker_str = str(int(broker))
+    location_str = const.CONVERT_COUNTRIES[location]
     callback_data_suffix = "#" + from_currency + "#" + from_type + "#" + from_country + \
                            "#" + const.ALL_BANKS_NAME_TO_ID[from_bank] + \
                            "#" + to_currency + "#" + to_type + "#" + to_country + \
                            "#" + const.ALL_BANKS_NAME_TO_ID[to_bank] + \
-                           "#" + online_str + "#" + broker_str + "#" + str(result_num) + "#" + str(instant_num)
+                           "#" + location + "#" + broker_str + "#" + str(result_num) + "#" + str(instant_num)
     from_union_type_text = const.CONVERT_CASH["cash"]
     if from_type != "cash":
         if from_country == "am":
             from_union_type_text = const.CONVERT_AM_BANKS[from_bank]
+        elif from_country == "rs":
+            from_union_type_text = const.CONVERT_RS_BANKS[from_bank]
         else:
             from_union_type_text = const.CONVERT_RU_BANKS[from_bank]
 
@@ -60,13 +62,10 @@ def inline_convert(from_currency, from_type, from_country, from_bank,
     else:
         if to_country == "am":
             to_union_type_text = const.CONVERT_AM_BANKS[to_bank]
+        elif to_country == "rs":
+            to_union_type_text = const.CONVERT_RS_BANKS[to_bank]
         else:
             to_union_type_text = const.CONVERT_RU_BANKS[to_bank]
-
-    if online_only:
-        online_suffix = " ✅"
-    else:
-        online_suffix = " ❌"
 
     if broker:
         broker_suffix = " ✅"
@@ -92,8 +91,8 @@ def inline_convert(from_currency, from_type, from_country, from_bank,
                                        callback_data="c_to_union_t" + callback_data_suffix)
         ],
         [
-            types.InlineKeyboardButton(text="Только онлайн" + online_suffix,
-                                       callback_data="c_online" + callback_data_suffix),
+            types.InlineKeyboardButton(text=location_str,
+                                       callback_data="c_location" + callback_data_suffix),
             types.InlineKeyboardButton(text="Быстро" + instant_suffix,
                                        callback_data="c_instant" + callback_data_suffix)],
         [types.InlineKeyboardButton(text="Биржа" + broker_suffix,

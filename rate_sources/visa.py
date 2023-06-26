@@ -48,11 +48,10 @@ def add_visa(url="https://usa.visa.com/cmsapi/fx/rates?amount=1", from_curr="AMD
 
         amd_rsd_rate = float(rate["fxRateWithAdditionalFee"])
 
-        # Country am is a workaround
-        add_rate(all_rates, from_curr.lower(), "bank", "am", bank, to_curr.lower(), "pos", "am", "", "pos",
+        add_rate(all_rates, from_curr.lower(), "bank", "am", bank, to_curr.lower(), "pos", "rs", "", "pos",
                  amd_rsd_rate, "from")
         if bank_cash_fee is not None:
-            add_rate(all_rates, from_curr.lower(), "bank", "am", bank, to_curr.lower(), "cash", "am", "", "atm",
+            add_rate(all_rates, from_curr.lower(), "bank", "am", bank, to_curr.lower(), "cash", "rs", "", "atm",
                      amd_rsd_rate * (1 + bank_cash_fee), "from")
     else:
         log.logger.error("Can not add Visa rates")

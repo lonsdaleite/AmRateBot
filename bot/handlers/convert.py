@@ -41,7 +41,7 @@ async def handle_convert(message: types.Message, state: FSMContext):
                                   parse_mode=types.ParseMode.HTML,
                                   reply_markup=bot_reply_markup.inline_convert(
                                       from_currency, from_type, from_country, from_bank,
-                                      to_currency, to_type, to_country, to_bank, False, False, result_num=result_num, instant_num=instant_num))
+                                      to_currency, to_type, to_country, to_bank, "am", False, result_num=result_num, instant_num=instant_num))
 
     await bot.common.send_message(message.from_user.id,
                                   "Нажимайте на кнопки под сообщением, чтобы изменить параметры конвертации")
@@ -61,7 +61,7 @@ def parse_callback_data(data):
     to_bank = splitted_data[8]
     if to_bank in const.ALL_BANKS_ID_TO_NAME:
         to_bank = const.ALL_BANKS_ID_TO_NAME[to_bank]
-    online_only = bool(int(splitted_data[9]))
+    location = splitted_data[9]
     broker = bool(int(splitted_data[10]))
     # Backward compatibility
     if len(splitted_data) > 11:
@@ -78,12 +78,12 @@ def parse_callback_data(data):
     log.logger.debug("instant_num: " + str(instant_num))
 
     return from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, \
-        online_only, broker, result_num, instant_num
+        location, broker, result_num, instant_num
 
 
 async def update_message(message, text,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num, instant_num):
+                         to_currency, to_type, to_country, to_bank, location, broker, result_num, instant_num):
     try:
         await message.edit_text(
             f"<pre>{text}</pre>",
@@ -91,7 +91,7 @@ async def update_message(message, text,
             reply_markup=bot_reply_markup.inline_convert(
                 from_currency, from_type, from_country, from_bank,
                 to_currency, to_type, to_country, to_bank,
-                online_only, broker, result_num=result_num, instant_num=instant_num))
+                location, broker, result_num=result_num, instant_num=instant_num))
     except MessageNotModified:
         pass
         # log.logger.trace("Message not modified")
@@ -101,7 +101,7 @@ async def update_message(message, text,
 
 
 async def callback_prev_convert(callback: types.CallbackQuery):
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, location, broker, \
         result_num, instant_num = parse_callback_data(callback.data)
     if result_num < 0:
         result_num = 0
@@ -110,11 +110,11 @@ async def callback_prev_convert(callback: types.CallbackQuery):
 
     await get_convert(callback, from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country,
                       to_bank,
-                      online_only, broker, result_num, instant_num)
+                      location, broker, result_num, instant_num)
 
 
 async def callback_next_convert(callback: types.CallbackQuery):
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, location, broker, \
         result_num, instant_num = parse_callback_data(callback.data)
     if result_num < 0:
         result_num = 0
@@ -123,20 +123,20 @@ async def callback_next_convert(callback: types.CallbackQuery):
 
     await get_convert(callback, from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country,
                       to_bank,
-                      online_only, broker, result_num, instant_num)
+                      location, broker, result_num, instant_num)
 
 
 async def callback_update_convert(callback: types.CallbackQuery):
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, location, broker, \
         result_num, instant_num = parse_callback_data(callback.data)
     result_num = 0
 
     await get_convert(callback, from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank,
-                      online_only, broker, result_num, instant_num)
+                      location, broker, result_num, instant_num)
 
 
 async def get_convert(callback, from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank,
-                      online_only, broker, result_num, instant_num):
+                      location, broker, result_num, instant_num):
     user = await validate(callback=callback)
     if user is None:
         return
@@ -145,18 +145,17 @@ async def get_convert(callback, from_currency, from_type, from_country, from_ban
     # log.logger.debug(callback_data_suffix)
 
     extra_exclude_methods = []
-    if online_only:
-        extra_exclude_methods += ["atm", "bank"]
     if not broker:
         extra_exclude_methods += ["broker"]
-    exclude_methods_local = extra_exclude_methods
 
     instant = bool(instant_num)
 
-    rates_filter = lambda x: x["method"] not in exclude_methods_local \
-                             and x["from_bank"] in ([""] + user.include_banks) \
-                             and x["to_bank"] in ([""] + user.include_banks) \
-                             and (not instant or x["instant"])
+    rates_filter = lambda x: x["method"] not in extra_exclude_methods \
+                         and (x["from_type"] != "cash" or x["from_country"] == location) \
+                         and (x["to_type"] != "cash" or x["to_country"] == location) \
+                         and x["from_bank"] in ([""] + user.include_banks) \
+                         and x["to_bank"] in ([""] + user.include_banks) \
+                         and (not instant or x["instant"])
     prev_msg = callback.message.text
     msg, result_num = get_best_convert(bot.common.all_rates,
                            from_currency, from_type, from_country, from_bank,
@@ -176,7 +175,7 @@ async def get_convert(callback, from_currency, from_type, from_country, from_ban
     if prev_msg != msg:
         await update_message(callback.message, msg,
                              from_currency, from_type, from_country, from_bank,
-                             to_currency, to_type, to_country, to_bank, online_only, broker, result_num, instant_num)
+                             to_currency, to_type, to_country, to_bank, location, broker, result_num, instant_num)
 
     await callback.answer()
     # log.logger.debug("Convert updated")
@@ -199,7 +198,7 @@ async def callback_update_from_currency(callback: types.CallbackQuery):
     if user is None:
         return
 
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, location, broker, \
         result_num, instant_num = parse_callback_data(callback.data)
     result_num = -1
 
@@ -208,7 +207,7 @@ async def callback_update_from_currency(callback: types.CallbackQuery):
     msg = callback.message.text
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num, instant_num)
+                         to_currency, to_type, to_country, to_bank, location, broker, result_num, instant_num)
 
     await callback.answer()
 
@@ -218,7 +217,7 @@ async def callback_update_to_currency(callback: types.CallbackQuery):
     if user is None:
         return
 
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, location, broker, \
         result_num, instant_num = parse_callback_data(callback.data)
     result_num = -1
 
@@ -227,14 +226,15 @@ async def callback_update_to_currency(callback: types.CallbackQuery):
     msg = callback.message.text
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num, instant_num)
+                         to_currency, to_type, to_country, to_bank, location, broker, result_num, instant_num)
 
     await callback.answer()
 
 
-def next_union_type(country, type_, bank, online_only, user, from_to):
-    list_ru_banks_exclude = [x for x in const.LIST_RU_BANKS if x in ([""] + user.include_banks)]
-    list_am_banks_exclude = [x for x in const.LIST_AM_BANKS if x in ([""] + user.include_banks)]
+def next_union_type(country, type_, bank, location, user, from_to):
+    list_ru_banks_include = [x for x in const.LIST_RU_BANKS if x in ([""] + user.include_banks)]
+    list_am_banks_include = [x for x in const.LIST_AM_BANKS if x in ([""] + user.include_banks)]
+    list_rs_banks_include = [x for x in const.LIST_RS_BANKS if x in ([""] + user.include_banks)]
 
     new_type = type_
     new_bank = bank
@@ -242,38 +242,43 @@ def next_union_type(country, type_, bank, online_only, user, from_to):
     if type_ == "cash" and from_to == "to":
         new_bank = ""
         new_type = "pos"
-        new_country = "am"
+        new_country = location
     elif type_ == "pos" or type_ == "cash" and from_to == "from":
         new_type = "bank"
-        new_bank = list_ru_banks_exclude[0]
-        new_country = "ru"
-    elif country == "ru":
-        for num, bank_tmp in enumerate(list_ru_banks_exclude):
+        new_bank = list_rs_banks_include[0]
+        new_country = "rs"
+    elif country == "rs":
+        for num, bank_tmp in enumerate(list_rs_banks_include):
             if bank == bank_tmp:
-                if num == len(list_ru_banks_exclude) - 1:
-                    new_bank = list_am_banks_exclude[0]
+                if num == len(list_rs_banks_include) - 1:
+                    new_bank = list_ru_banks_include[0]
+                    new_country = "ru"
+                else:
+                    new_bank = list_rs_banks_include[num + 1]
+                break
+    elif country == "ru":
+        for num, bank_tmp in enumerate(list_ru_banks_include):
+            if bank == bank_tmp:
+                if num == len(list_ru_banks_include) - 1:
+                    new_bank = list_am_banks_include[0]
                     new_country = "am"
                 else:
-                    new_bank = list_ru_banks_exclude[num + 1]
+                    new_bank = list_ru_banks_include[num + 1]
                 break
     else:
-        for num, bank_tmp in enumerate(list_am_banks_exclude):
+        for num, bank_tmp in enumerate(list_am_banks_include):
             if bank == bank_tmp:
-                if num == len(list_am_banks_exclude) - 1:
-                    if online_only and from_to == "from":
+                if num == len(list_am_banks_include) - 1:
+                    if location == "on":
                         new_type = "bank"
-                        new_bank = list_ru_banks_exclude[0]
-                        new_country = "ru"
-                    elif online_only and from_to == "to":
-                        new_bank = ""
-                        new_type = "pos"
-                        new_country = "am"
+                        new_bank = list_rs_banks_include[0]
+                        new_country = "rs"
                     else:
                         new_bank = ""
                         new_type = "cash"
-                        new_country = "am"
+                        new_country = location
                 else:
-                    new_bank = list_am_banks_exclude[num + 1]
+                    new_bank = list_am_banks_include[num + 1]
                 break
     return new_country, new_type, new_bank
 
@@ -283,16 +288,16 @@ async def callback_update_from_union_type(callback: types.CallbackQuery):
     if user is None:
         return
 
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, location, broker, \
         result_num, instant_num = parse_callback_data(callback.data)
     result_num = -1
 
-    from_country, from_type, from_bank = next_union_type(from_country, from_type, from_bank, online_only, user, "from")
+    from_country, from_type, from_bank = next_union_type(from_country, from_type, from_bank, location, user, "from")
 
     msg = callback.message.text
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num, instant_num)
+                         to_currency, to_type, to_country, to_bank, location, broker, result_num, instant_num)
 
     await callback.answer()
 
@@ -302,42 +307,47 @@ async def callback_update_to_union_type(callback: types.CallbackQuery):
     if user is None:
         return
 
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, location, broker, \
         result_num, instant_num = parse_callback_data(callback.data)
     result_num = -1
 
-    to_country, to_type, to_bank = next_union_type(to_country, to_type, to_bank, online_only, user, "to")
+    to_country, to_type, to_bank = next_union_type(to_country, to_type, to_bank, location, user, "to")
 
     msg = callback.message.text
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num, instant_num)
+                         to_currency, to_type, to_country, to_bank, location, broker, result_num, instant_num)
 
     await callback.answer()
 
 
-async def callback_update_online_only(callback: types.CallbackQuery):
+async def callback_update_location(callback: types.CallbackQuery):
     user = await validate(callback=callback)
     if user is None:
         return
 
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, location, broker, \
         result_num, instant_num = parse_callback_data(callback.data)
     result_num = -1
 
-    if online_only:
-        online_only = False
+    location_num = const.LIST_COUNTRIES.index(location)
+    if location_num == len(const.LIST_COUNTRIES) - 1:
+        location = const.LIST_COUNTRIES[0]
     else:
-        online_only = True
+        location = const.LIST_COUNTRIES[location_num + 1]
+
+    if location == "on":
         if from_type == "cash":
-            from_country, from_type, from_bank = next_union_type(from_country, from_type, from_bank, online_only, user, "from")
+            from_country, from_type, from_bank = next_union_type(from_country, from_type, from_bank, location, user, "from")
         if to_type == "cash":
-            to_country, to_type, to_bank = next_union_type(to_country, to_type, to_bank, online_only, user, "to")
+            to_country, to_type, to_bank = next_union_type(to_country, to_type, to_bank, location, user, "to")
+        if to_type == "pos":
+            to_country, to_type, to_bank = next_union_type(to_country, to_type, to_bank, location, user, "to")
 
     msg = callback.message.text
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num, instant_num)
+                         to_currency, to_type, to_country, to_bank, location, broker, result_num, instant_num)
 
     await callback.answer()
 
@@ -347,7 +357,7 @@ async def callback_update_instant(callback: types.CallbackQuery):
     if user is None:
         return
 
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, location, broker, \
         result_num, instant_num = parse_callback_data(callback.data)
 
     if instant_num == 0:
@@ -358,7 +368,7 @@ async def callback_update_instant(callback: types.CallbackQuery):
     msg = callback.message.text
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num, instant_num)
+                         to_currency, to_type, to_country, to_bank, location, broker, result_num, instant_num)
 
     await callback.answer()
 
@@ -368,7 +378,7 @@ async def callback_update_broker(callback: types.CallbackQuery):
     if user is None:
         return
 
-    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, online_only, broker, \
+    from_currency, from_type, from_country, from_bank, to_currency, to_type, to_country, to_bank, location, broker, \
         result_num, instant_num = parse_callback_data(callback.data)
     result_num = -1
 
@@ -380,7 +390,7 @@ async def callback_update_broker(callback: types.CallbackQuery):
     msg = callback.message.text
     await update_message(callback.message, msg,
                          from_currency, from_type, from_country, from_bank,
-                         to_currency, to_type, to_country, to_bank, online_only, broker, result_num, instant_num)
+                         to_currency, to_type, to_country, to_bank, location, broker, result_num, instant_num)
 
     await callback.answer()
 

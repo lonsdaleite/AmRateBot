@@ -1,5 +1,13 @@
 from collections import OrderedDict
 
+CONVERT_COUNTRIES = OrderedDict({
+    "on": "Только онлайн",
+    "ru": "В России",
+    "am": "В Армении",
+    "rs": "В Сербии"
+})
+LIST_COUNTRIES = list(CONVERT_COUNTRIES.keys())
+
 ALL_CURRENCIES = OrderedDict({
     "rur": "₽",
     "usd": "$",

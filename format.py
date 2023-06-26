@@ -1,6 +1,6 @@
 import prettytable as pt
 from prettytable import ALL
-from const import ALL_CURRENCIES, ALL_BANKS, ALL_METHODS, CONVERT_AM_BANKS, CONVERT_RU_BANKS
+from const import ALL_CURRENCIES, ALL_BANKS, ALL_METHODS, CONVERT_AM_BANKS, CONVERT_RU_BANKS, CONVERT_RS_BANKS
 
 
 def format_rates(rates, result_format="wide", print_=False):
@@ -20,10 +20,14 @@ def format_rates(rates, result_format="wide", print_=False):
         format_to_currency = ALL_CURRENCIES[rate["to_currency"]]
         if rate["from_country"] == "am":
             format_from_bank = CONVERT_AM_BANKS[rate["from_bank"]]
+        elif rate["from_country"] == "rs":
+            format_from_bank = CONVERT_RS_BANKS[rate["from_bank"]]
         else:
             format_from_bank = CONVERT_RU_BANKS[rate["from_bank"]]
         if rate["to_country"] == "am":
             format_to_bank = CONVERT_AM_BANKS[rate["to_bank"]]
+        elif rate["to_country"] == "rs":
+            format_to_bank = CONVERT_RS_BANKS[rate["to_bank"]]
         else:
             format_to_bank = CONVERT_RU_BANKS[rate["to_bank"]]
         if rate["method"] in ALL_METHODS:
