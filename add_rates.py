@@ -47,9 +47,11 @@ def add_const_rates(all_rates=None):
     add_rate(all_rates, "rsd", "cash", "rs", "", "rsd", "bank", "rs", "",        "atm",      1, "from")
     add_rate(all_rates, "eur", "cash", "rs", "", "eur", "bank", "rs", "alta",    "bank",     1, "from", instant=False)
     add_rate(all_rates, "eur", "cash", "rs", "", "eur", "bank", "rs", "raif-rs", "bank",     1, "from", instant=False)
+    add_rate(all_rates, "eur", "bank", "rs", "", "eur", "cash", "rs", "alta",    "bank",     1, "from", instant=False)
+    add_rate(all_rates, "eur", "bank", "rs", "", "eur", "cash", "rs", "raif-rs", "bank",     1, "from", instant=False)
     #### TEST ####
-    add_rate(all_rates, "eur", "bank", "rs", "alta", "rsd", "bank", "rs", "alta", "bank", 116.7072, "to")
-    add_rate(all_rates, "rsd", "bank", "rs", "alta", "eur", "bank", "rs", "alta", "bank", 117.8215, "from")
+    add_rate(all_rates, "eur", "bank", "rs", "alta", "rsd", "bank", "rs", "alta", "bank", 116.6820, "to")
+    add_rate(all_rates, "rsd", "bank", "rs", "alta", "eur", "bank", "rs", "alta", "bank", 117.2683, "from")
 
     # RU - RS
     add_rate(all_rates, "eur", "bank", "ru", "raif", "eur", "bank", "rs", "alta",    "swift", 1.02 * 1.002, "from", instant=False)
@@ -79,10 +81,7 @@ def add_all_rates(all_rates=None):
     add_rate_am(convert_type="non-cash", all_rates=all_rates)
     add_id_pay(all_rates)
     add_unionpay(all_rates=all_rates)
-    add_visa(fee=0.5, bank="ardshinbank", from_curr="AMD", to_curr="RSD", bank_cash_fee=0.015, all_rates=all_rates)
-    add_visa(fee=0.5, bank="ardshinbank", from_curr="EUR", to_curr="RSD", bank_cash_fee=0.015, all_rates=all_rates)
-    add_visa(fee=2, bank="yunibank", from_curr="AMD", to_curr="RSD", bank_cash_fee=0.013, all_rates=all_rates)
-    add_visa(fee=2, bank="yunibank", from_curr="EUR", to_curr="RSD", bank_cash_fee=None, all_rates=all_rates)
+    add_visa(all_rates=all_rates)
 
     add_const_rates(all_rates=all_rates)
 

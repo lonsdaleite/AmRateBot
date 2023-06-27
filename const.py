@@ -125,5 +125,6 @@ ALL_METHODS = OrderedDict({
     "total": "Итого",
     "transfer": "Перевод",
     "unistream": "Unistream",
-    "pos": "Оплата"
+    "pos": "Оплата",
+    "c2c": "Card2Card"
 })
