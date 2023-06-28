@@ -55,7 +55,7 @@ def add_visa(all_rates=None):
     # ArdshinBank
     ardshin_convert_fee = 0.5
     ardshin_cash_fee = 0.015
-    ardshin_c2c_fee = 0.01
+    ardshin_c2c_fee = 0.005
 
     ardshin_amd_rsd_rate = get_visa_rate(convert_fee=ardshin_convert_fee, from_curr="AMD", to_curr="RSD")
     ardshin_eur_rsd_rate = get_visa_rate(convert_fee=ardshin_convert_fee, from_curr="EUR", to_curr="RSD")
