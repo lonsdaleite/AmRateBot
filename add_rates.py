@@ -34,8 +34,6 @@ def add_const_rates(all_rates=None):
     # RU - AM
     add_rate(all_rates, "amd", "bank", "ru", "tinkoff",    "amd", "pos",  "am", "",         "pos",      1,      "from")
     add_rate(all_rates, "rur", "bank", "ru", "",           "rur", "bank", "am", "",         "transfer", 1,      "from", instant=False)
-    add_rate(all_rates, "usd", "bank", "ru", "raif",       "usd", "bank", "am", "",         "swift",    1.02,   "from", instant=False)
-    add_rate(all_rates, "eur", "bank", "ru", "raif",       "eur", "bank", "am", "",         "swift",    1.02,   "from", instant=False)
 
     # AM - RU
     add_rate(all_rates, "rur", "bank", "am", "yunibank",   "rur", "bank", "ru", "",         "transfer", 1.002, "from", instant=False)
