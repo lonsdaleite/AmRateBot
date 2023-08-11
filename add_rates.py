@@ -54,8 +54,8 @@ def add_const_rates(all_rates=None):
     add_rate(all_rates, "rsd", "cash", "rs", "",     "eur", "cash", "rs", "",     "convert", 117.3, "from")
 
     # RU - RS
-    add_rate(all_rates, "eur", "bank", "ru", "raif", "eur", "bank", "rs", "alta",    "swift", 1.02 * 1.002, "from", instant=False)
-    add_rate(all_rates, "eur", "bank", "ru", "raif", "eur", "bank", "rs", "raif-rs", "swift", 1.02 * 1.002, "from", instant=False)
+    add_rate(all_rates, "eur", "bank", "ru", "raif", "eur", "bank", "rs", "alta",    "swift", 1.015 * 1.002, "from", instant=False)
+    add_rate(all_rates, "eur", "bank", "ru", "raif", "eur", "bank", "rs", "raif-rs", "swift", 1.015 * 1.002, "from", instant=False)
 
     # AM - RS
     add_rate(all_rates, "eur", "bank", "am", "ardshinbank", "eur", "bank", "rs", "alta",    "swift", 1.02 * 1.002,  "from", instant=False)
