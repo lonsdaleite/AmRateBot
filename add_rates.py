@@ -1,6 +1,6 @@
 from rate import add_rate
 from rate_sources.id_pay import add_id_pay
-from rate_sources.raiffeisen_broker import add_raiffeisen_broker
+from rate_sources.raiffeisen import add_raiffeisen
 from rate_sources.rate_am import add_rate_am
 from rate_sources.sas import add_sas
 from rate_sources.mir import add_mir
@@ -55,7 +55,7 @@ def add_const_rates(all_rates=None):
 
     # RU - RS
     add_rate(all_rates, "eur", "bank", "ru", "raif", "eur", "bank", "rs", "alta",    "swift", 1.015 * 1.002, "from", instant=False)
-    add_rate(all_rates, "eur", "bank", "ru", "raif", "eur", "bank", "rs", "raif-rs", "swift", 1.015 * 1.002, "from", instant=False)
+    add_rate(all_rates, "eur", "bank", "ru", "raif", "eur", "bank", "rs", "raif-rs", "swift", 1.015, "from", instant=False)
 
     # AM - RS
     add_rate(all_rates, "eur", "bank", "am", "ardshinbank", "eur", "bank", "rs", "alta",    "swift", 1.02 * 1.002,  "from", instant=False)
@@ -75,7 +75,8 @@ def add_all_rates(all_rates=None):
     add_mir(all_rates=all_rates)
     add_tinkoff_broker(all_rates=all_rates)
     add_tinkoff_card(all_rates=all_rates)
-    add_raiffeisen_broker(all_rates=all_rates)
+    add_raiffeisen(all_rates=all_rates, fee=0.019, method="broker")
+    add_raiffeisen(all_rates=all_rates, fee=0.01, method="convert")
     add_unistream(all_rates=all_rates)
     add_rate_am(convert_type="cash", all_rates=all_rates)
     add_rate_am(convert_type="non-cash", all_rates=all_rates)
