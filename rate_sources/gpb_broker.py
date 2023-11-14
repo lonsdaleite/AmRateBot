@@ -25,18 +25,12 @@ def get_currency(url):
         log.logger.error("Can not get Tinkoff broker rates")
 
 
-def add_tinkoff_broker(url="https://www.tinkoff.ru/invest/currencies/", all_rates=None, fee=0.004):
-    usdrub_rate = get_currency(url + "USDRUB")
-    eurrub_rate = get_currency(url + "EURRUB")
+def add_gpb_broker(url="https://www.tinkoff.ru/invest/currencies/", all_rates=None, fee=0.002):
     cnyrub_rate = get_currency(url + "CNYRUB")
     # print(usdrub_rate, eurrub_rate)
 
-    if usdrub_rate is not None and eurrub_rate is not None and cnyrub_rate is not None:
-        add_rate(all_rates, "rur", "bank", "ru", "tinkoff", "usd", "bank", "ru", "tinkoff", "broker",
-                 float(usdrub_rate) * (1 + fee), "from")
-        add_rate(all_rates, "rur", "bank", "ru", "tinkoff", "eur", "bank", "ru", "tinkoff", "broker",
-                 float(eurrub_rate) * (1 + fee), "from")
-        add_rate(all_rates, "rur", "bank", "ru", "tinkoff", "cny", "bank", "ru", "tinkoff", "broker",
+    if cnyrub_rate is not None:
+        add_rate(all_rates, "rur", "bank", "ru", "gpb", "cny", "bank", "ru", "gpb", "broker",
                  float(cnyrub_rate) * (1 + fee), "from")
     else:
-        log.logger.error("Can not add Tinkoff broker rates")
+        log.logger.error("Can not add GPB broker rates")

@@ -1,4 +1,5 @@
 from rate import add_rate
+from rate_sources.gpb_broker import add_gpb_broker
 from rate_sources.id_pay import add_id_pay
 from rate_sources.raiffeisen import add_raiffeisen
 from rate_sources.rate_am import add_rate_am
@@ -30,6 +31,7 @@ def add_const_rates(all_rates=None):
 
     # RU - RU
     add_rate(all_rates, "rur", "bank", "ru", "",           "rur", "bank", "ru", "",         "transfer", 1,     "from")
+    add_rate(all_rates, "cny", "bank", "ru", "tinkoff",    "cny", "bank", "ru", "gpb",      "swift",    1,     "from")
 
     # RU - AM
     add_rate(all_rates, "amd", "bank", "ru", "tinkoff",    "amd", "pos",  "am", "",         "pos",      1,      "from")
@@ -72,16 +74,17 @@ def add_all_rates(all_rates=None):
         all_rates = []
 
     add_sas(all_rates=all_rates)
-    add_mir(all_rates=all_rates)
+    # add_mir(all_rates=all_rates)
     add_tinkoff_broker(all_rates=all_rates)
     add_tinkoff_card(all_rates=all_rates)
+    add_gpb_broker(all_rates=all_rates)
     add_raiffeisen(all_rates=all_rates, fee=0.019, method="broker")
     add_raiffeisen(all_rates=all_rates, fee=0.01, method="convert")
     add_unistream(all_rates=all_rates)
     add_rate_am(convert_type="cash", all_rates=all_rates)
     add_rate_am(convert_type="non-cash", all_rates=all_rates)
     add_id_pay(all_rates)
-    # add_unionpay(all_rates=all_rates)
+    add_unionpay(all_rates=all_rates)
     add_visa(all_rates=all_rates)
 
     add_const_rates(all_rates=all_rates)

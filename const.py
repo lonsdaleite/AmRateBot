@@ -13,7 +13,8 @@ ALL_CURRENCIES = OrderedDict({
     "usd": "$",
     "eur": "€",
     "amd": "֏",
-    "rsd": "RSD"
+    "rsd": "RSD",
+    "cny": "¥"
 })
 LIST_CURRENCIES = list(ALL_CURRENCIES.keys())
 
@@ -24,6 +25,7 @@ CONVERT_POS = OrderedDict({"pos": "Оплата"})
 CONVERT_RU_BANKS = OrderedDict({
     "tinkoff": "Tinkoff",
     "raif": "Raiffeisen RU",
+    "gpb": "Gazprom",
     "": "Банк РФ"
 })
 LIST_RU_BANKS = list(CONVERT_RU_BANKS.keys())
