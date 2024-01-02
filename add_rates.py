@@ -53,7 +53,7 @@ def add_const_rates(all_rates=None):
     add_rate(all_rates, "eur", "bank", "rs", "alta", "rsd", "bank", "rs", "alta", "bank", 116.6325, "to")
     add_rate(all_rates, "rsd", "bank", "rs", "alta", "eur", "bank", "rs", "alta", "bank", 117.7461, "from")
     add_rate(all_rates, "eur", "cash", "rs", "",     "rsd", "cash", "rs", "",     "convert", 117, "to")
-    add_rate(all_rates, "rsd", "cash", "rs", "",     "eur", "cash", "rs", "",     "convert", 117.3, "from")
+    add_rate(all_rates, "rsd", "cash", "rs", "",     "eur", "cash", "rs", "",     "convert", 117.4, "from")
 
     # RU - RS
     add_rate(all_rates, "eur", "bank", "ru", "raif", "eur", "bank", "rs", "alta",    "swift", 1.015 * 1.002, "from", instant=False)
