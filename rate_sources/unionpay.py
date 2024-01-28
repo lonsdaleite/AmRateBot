@@ -30,7 +30,8 @@ def add_day(dt_str, days):
     return dt.strftime("%Y%m%d")
 
 
-def add_unionpay(url="https://www.unionpayintl.com/upload/jfimg/", trans_cur="RSD", base_cur="CNY", bank="gpb", fee=0.01, all_rates=None):
+def add_unionpay(url="https://www.unionpayintl.com/upload/jfimg/", trans_cur="RSD", base_cur="CNY", bank="gpb",
+                 to_country="rs", fee=0.01, all_rates=None):
     dt = datetime.datetime.now().strftime("%Y%m%d")
     dt_min = add_day(dt, -10)
     full_rate = get_json_rate(dt, url)
@@ -45,9 +46,9 @@ def add_unionpay(url="https://www.unionpayintl.com/upload/jfimg/", trans_cur="RS
 
         for rate in full_rate_json["exchangeRateJson"]:
             if rate["transCur"] == trans_cur and rate["baseCur"] == base_cur:
-                add_rate(all_rates, base_cur.lower(), "bank", "ru", bank, trans_cur.lower(), "pos", "rs", "", "pos",
+                add_rate(all_rates, base_cur.lower(), "bank", "ru", bank, trans_cur.lower(), "pos", to_country, "", "pos",
                          float(rate["rateData"] / (1 + fee)), "from")
-                add_rate(all_rates, base_cur.lower(), "bank", "ru", bank, trans_cur.lower(), "cash", "rs", "", "atm",
+                add_rate(all_rates, base_cur.lower(), "bank", "ru", bank, trans_cur.lower(), "cash", to_country, "", "atm",
                          float(rate["rateData"] / (1 + fee)), "from")
                 break
     else:

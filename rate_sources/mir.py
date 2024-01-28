@@ -4,9 +4,12 @@ from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 from rate import add_rate
 import log
+import io
+import re
+from PyPDF2 import PdfReader
 
 
-def add_mir(url="https://mironline.ru/support/list/kursy_mir/", all_rates=None):
+def add_mir(url="https://privetmir.ru/upload/FX_rate_Mir/FX_rate_Mir.pdf", all_rates=None):
     try:
         # page = requests.get(url)
         hdr = {'User-Agent': 'Mozilla/5.0'}
@@ -23,18 +26,21 @@ def add_mir(url="https://mironline.ru/support/list/kursy_mir/", all_rates=None):
             if try_num > 5:
                 log.logger.error("Can not get MIR rate")
                 break
-            soup = BeautifulSoup(page, "lxml")
-            # print(soup)
-            rates = soup.find_all("tr")
-            if len(rates) == 0:
-                continue
+            # Read the PDF file with io.BytesIO
+            file = io.BytesIO(page.read())
+            pdf = PdfReader(file)
 
-            for rate in rates:
-                currency = rate.findNext("p")
-                if currency.text.strip() == "Армянский драм":
-                    value = currency.findNext("p")
-                    result = float(value.text.strip().replace(",", "."))
+            # Get number of pages in the PDF
+            num_pages = len(pdf.pages)
+
+            # Iterate through each page and print the content
+            for page in range(num_pages):
+                text = pdf.pages[page].extract_text()
+                if "Армянский драм" in text:
+                    # print(text)
+                    result = float(re.sub(r"[^\\0]*Армянский драм ([0-9]*),([0-9]*)[^◕]+", "\\1.\\2", text))
                     add_rate(all_rates, "rur", "bank", "ru", "", "amd", "cash", "am", "", "atm", result, "from")
+                    # print(result)
                     break
     except Exception as e:
         log.logger.error(e)

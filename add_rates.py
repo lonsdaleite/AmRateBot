@@ -74,7 +74,7 @@ def add_all_rates(all_rates=None):
         all_rates = []
 
     add_sas(all_rates=all_rates)
-    # add_mir(all_rates=all_rates)
+    add_mir(all_rates=all_rates)
     add_tinkoff_broker(all_rates=all_rates)
     add_tinkoff_card(all_rates=all_rates)
     add_gpb_broker(all_rates=all_rates)
@@ -84,7 +84,8 @@ def add_all_rates(all_rates=None):
     add_rate_am(convert_type="cash", all_rates=all_rates)
     add_rate_am(convert_type="non-cash", all_rates=all_rates)
     add_id_pay(all_rates)
-    add_unionpay(all_rates=all_rates)
+    add_unionpay(trans_cur="RSD", base_cur="CNY", bank="gpb", to_country="rs", fee=0.01, all_rates=all_rates)
+    add_unionpay(trans_cur="AMD", base_cur="CNY", bank="gpb", to_country="am", fee=0.01, all_rates=all_rates)
     add_visa(all_rates=all_rates)
 
     add_const_rates(all_rates=all_rates)
